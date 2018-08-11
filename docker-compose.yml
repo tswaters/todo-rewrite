@@ -1,0 +1,65 @@
+version: "3.7"
+services:
+  api:
+    build: todo-api
+    command: node index.js
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      PGHOST: postgres
+      PGUSER: todo
+      PGDATABASE: todo
+      REDIS_HOST: redis
+      REDIS_SESSION_DB: 0
+      SESSION_TIMEOUT: 900
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    secrets:
+      - PGPASSWORD
+      - SESSION_SECRET
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    build: todo-db
+    volumes:
+      - "pg_data:/var/lib/postgresql/data"
+    environment:
+      PGPASSWORD_FILE: /var/run/secrets/PGPASSWORD_FILE
+      POSTGRES_PASSWORD_FILE: /var/run/secrets/POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    secrets:
+      - PGPASSWORD
+      - POSTGRES_PASSWORD
+  ddl:
+    build: todo-ddl
+    command: deploy
+    depends_on:
+      - postgres
+    secrets:
+      - PGPASSWORD
+  redis:
+    image: redis:latest
+    volumes:
+      - "redis_data:/data"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "if [ $$(redis-cli ping) = 'PONG' ]; then exit 0; fi; exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    sysctls:
+      net.core.somaxconn: '511'
+volumes:
+  pg_data:
+  redis_data:
+secrets:
+  SESSION_SECRET:
+    file: .env/SESSION_SECRET
+  PGPASSWORD:
+    file: .env/PGPASSWORD
+  POSTGRES_PASSWORD:
+    file: .env/POSTGRES_PASSWORD

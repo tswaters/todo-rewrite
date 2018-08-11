@@ -1,0 +1,6 @@
+
+BEGIN;
+
+DROP SCHEMA auth;
+
+COMMIT;

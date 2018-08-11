@@ -1,0 +1,10 @@
+%syntax-version=1.0.0
+%project=todo
+
+auth.schema 2018-08-05T23:37:44Z Tyler Waters <tyler.waters@gmail.com> # Add auth schema
+auth.table.user [auth.schema] 2018-08-06T02:59:07Z Tyler Waters <tyler.waters@gmail.com> # User table
+auth.view.vw_users [auth.schema auth.table.user] 2018-08-10T04:38:40Z Tyler Waters <tyler.waters@gmail.com> # Adding users view
+auth.proc.add_user [auth.schema auth.table.user auth.view.vw_users] 2018-08-06T03:25:22Z Tyler Waters <tyler.waters@gmail.com> # Add add_user procedure
+auth.proc.login [auth.schema auth.view.vw_users] 2018-08-10T03:53:25Z Tyler Waters <tyler.waters@gmail.com> # Adding login procedure
+todo.schema 2018-08-05T23:37:44Z Tyler Waters <tyler.waters@gmail.com> # Add todo schema
+todo.table.todo [todo.schema auth.schema auth.table.user] 2018-08-06T03:09:03Z Tyler Waters <tyler.waters@gmail.com> # Add todo table

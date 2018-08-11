@@ -1,0 +1,6 @@
+
+BEGIN;
+
+DROP SCHEMA todo CASCADE;
+
+COMMIT;
