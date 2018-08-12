@@ -42,6 +42,11 @@ router.post('/register', [ensure_params, async (req, res, next) => {
         'SELECT user_id, roles FROM auth.add_user($1, $2)',
         [identifier, password]
       )
+
+      if (rows.length !== 1) {
+        throw unauthorized('invalid username or password')
+      }
+
       const {user_id, roles} = rows[0]
       user = {user_id, identifier, roles}
     } catch (err) {

@@ -5,6 +5,8 @@ const errors = require('../middleware/errors')
 const logger_middleware = require('../middleware/logger')
 const logger = require('../lib/logger')
 
+logger.level = 'silent'
+
 module.exports = () => {
   const context = new express.Router()
   const app = express()
