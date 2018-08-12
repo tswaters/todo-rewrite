@@ -1,6 +1,8 @@
 
 'use strict'
 
+const {NODE_ENV} = process.env
+
 module.exports = (err, req, res, next) => {
 
   if (res.headersSent) {
@@ -11,7 +13,7 @@ module.exports = (err, req, res, next) => {
     ? req.logger
     : req.app.locals.logger
 
-  if (process.env.NODE_ENV === 'production' || err.status !== 500) {
+  if (NODE_ENV === 'production' || err.status !== 500) {
     delete err.stack
   }
 
