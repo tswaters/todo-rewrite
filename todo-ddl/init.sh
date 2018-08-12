@@ -3,4 +3,4 @@ set -e
 
 export PGPASSWORD=`cat /var/run/secrets/PGPASSWORD`
 
-sqitch "$@"
+sqitch "$@"  db:pg://todo@postgres/todo
