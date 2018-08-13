@@ -1,7 +1,7 @@
 
 'use strict'
 
-const {app, context} = require('./server')()
+const {app, context} = require('../server')()
 const assert = require('assert')
 const sinon = require('sinon')
 const request = require('supertest')
@@ -14,7 +14,7 @@ describe('localization', () => {
   const query = sinon.stub()
 
   beforeEach(done => {
-    const localization = proxyquire('../api/localization', {
+    const localization = proxyquire('../../api/localization', {
       '../lib/db': {
         query
       }

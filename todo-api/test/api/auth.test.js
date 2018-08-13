@@ -1,7 +1,7 @@
 
 'use strict'
 
-const {app, context} = require('./server')()
+const {app, context} = require('../server')()
 const assert = require('assert')
 const sinon = require('sinon')
 const request = require('supertest')
@@ -16,7 +16,7 @@ describe('auth', () => {
   const query = sinon.stub()
 
   beforeEach(done => {
-    const auth = proxyquire('../api/auth', {
+    const auth = proxyquire('../../api/auth', {
       '../lib/auth': {
         revoke_token,
         sign_token

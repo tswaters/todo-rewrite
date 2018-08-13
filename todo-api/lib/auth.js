@@ -1,5 +1,5 @@
 
-const {JWT_SECRET, SESSION_TIMEOUT} = process.env
+const {JWT_SECRET = 'magic', SESSION_TIMEOUT = 900} = process.env
 const jwt = require('jsonwebtoken')
 const uuid = require('uuid')
 const {unauthorized} = require('./errors')
@@ -15,17 +15,18 @@ exports.sign_token = async user => {
 
   const token_id = uuid.v4()
 
-  const token = await new Promise((resolve, reject) => jwt.sign(
+  const token = await new Promise(resolve => jwt.sign(
     {...user, token_id},
     JWT_SECRET,
-    (err, result) => err ? reject(err) : resolve(result)
+    (_, result) => resolve(result)
   ))
 
   valid_tokens.set(token_id, true)
 
   return {
     success: true,
-    token
+    token,
+    token_id
   }
 }
 
