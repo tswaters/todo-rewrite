@@ -29,5 +29,19 @@
     "proxyquire": "^2.0.1",
     "sinon": "^6.1.5",
     "supertest": "^3.1.0"
+  },
+  "nyc": {
+    "exclude": [
+      "lib/db.js",
+      "lib/errors.js",
+      "lib/logger.js",
+      "middleware/errors.js",
+      "middleware/logger.js",
+      "test/**"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ]
   }
 }
