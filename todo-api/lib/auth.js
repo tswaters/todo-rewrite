@@ -8,7 +8,9 @@ const NodeCache = require('node-cache')
 const valid_tokens = new NodeCache({stdTTL: SESSION_TIMEOUT})
 
 exports.revoke_token = token_id => {
-  valid_tokens.del(token_id)
+  if (token_id) {
+    valid_tokens.del(token_id)
+  }
 }
 
 exports.sign_token = async user => {
