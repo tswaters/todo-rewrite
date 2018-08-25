@@ -5,11 +5,13 @@ const pool = new Pool()
 exports.query = async (query, values) => {
   let client = null
   try {
-    const client = await pool.connect()
+    client = await pool.connect()
     const result = await client.query(query, values)
     return result
   } finally {
-    client && client.release()
+    if (client) {
+      client.release()
+    }
   }
 }
 
