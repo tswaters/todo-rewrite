@@ -4,7 +4,9 @@
   "description": "various ways to accomplish a todo application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "docker-compose --file docker-compose-test.yml build && docker-compose -p todo-test --file docker-compose-test.yml up -d redis ddl",
+    "test": "npm run test:api || docker-compose -p todo-test --file docker-compose-test.yml down",
+    "test:api": "docker wait todo-test_ddl_1 && docker-compose -p todo-test --file docker-compose-test.yml run --no-deps --rm api test"
   },
   "author": "",
   "license": "ISC",

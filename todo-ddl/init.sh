@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
-export PGPASSWORD=`cat /var/run/secrets/PGPASSWORD`
+./wait-for-it.sh "$PGHOST:$PGPORT"
 
-sqitch "$@"  db:pg://todo@postgres/todo
+PGPASSWORD_FILE=/var/run/secrets/PGPASSWORD
+
+if [ -f $PGPASSWORD_FILE ]; then
+  export PGPASSWORD=`cat ${PGPASSWORD_FILE}`
+fi
+
+sqitch "$@" db:pg://$PGUSER@$PGHOST/$PGDATABASE

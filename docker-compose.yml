@@ -38,6 +38,11 @@ services:
     command: deploy
     depends_on:
       - postgres
+    environment:
+      PGHOST: postgres
+      PGUSER: todo
+      PGDATABASE: todo
+      PGPORT: "5432"
     secrets:
       - PGPASSWORD
   redis:
