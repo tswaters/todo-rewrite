@@ -20,7 +20,7 @@ SELECT
   ) as "roles"
 FROM auth.vw_users u
 WHERE
-  u.identifier = _identifier AND
+  lower(u.identifier) = lower(_identifier) AND
   u.password = crypt(_password, password);
 
 $BODY$
