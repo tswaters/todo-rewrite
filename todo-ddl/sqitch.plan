@@ -11,3 +11,8 @@ todo.table.todo [todo.schema auth.schema auth.table.user] 2018-08-06T03:09:03Z T
 i18n.schema 2018-08-12T15:48:52Z Tyler Waters <tyler.waters@gmail.com> # add localization schema
 i18n.table.locale [i18n.schema] 2018-08-12T15:53:15Z Tyler Waters <tyler.waters@gmail.com> # add locale table
 i18n.table.strings [i18n.schema i18n.table.locale] 2018-08-12T16:04:44Z Tyler Waters <tyler.waters@gmail.com> # add locale table
+todo.proc.add_todo [todo.schema todo.table.todo] 2018-08-25T20:46:22Z Tyler Waters <tyler.waters@gmail.com> # Adding todo.add_todo
+todo.proc.update_todo_text [todo.schema todo.table.todo] 2018-08-25T21:57:20Z Tyler Waters <tyler.waters@gmail.com> # Adding todo update text
+todo.proc.update_todo_complete [todo.schema todo.table.todo] 2018-08-25T22:16:34Z Tyler Waters <tyler.waters@gmail.com> # Adding todo update complete
+todo.proc.update_todo_delete [todo.schema todo.table.todo] 2018-08-25T22:26:36Z Tyler Waters <tyler.waters@gmail.com> # Adding todo update delete
+todo.view.vw_todos [todo.schema todo.table.todo] 2018-08-25T22:32:12Z Tyler Waters <tyler.waters@gmail.com> # Adding todo view

@@ -9,6 +9,8 @@ exports.forbidden = msg => new Err(msg, 403)
 
 exports.not_found = msg => new Err(msg, 404)
 
+exports.unprocessable = msg => new Err(msg, 422)
+
 exports.unhandled = msg => new Err(msg, 500)
 
 class Err extends Error {
