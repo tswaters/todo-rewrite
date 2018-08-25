@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'development') {
       type = ctx.white(type.padEnd(7))
 
       const msg = value.msg ? ctx.cyan(value.msg) : ''
-      const stack = value.type === 'Error' && !value.status ? `\n${value.stack}` : ''
+      const stack = value.type === 'Error' && value.stack && !value.status ? `\n${value.stack}` : ''
       return `${time} ${sid} (${user}) ${logLevel}${type}${msg}${stack}`
     }
   })
