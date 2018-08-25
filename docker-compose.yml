@@ -35,7 +35,7 @@ services:
       - POSTGRES_PASSWORD
   ddl:
     build: todo-ddl
-    command: deploy
+    command: deploy --verify
     depends_on:
       - postgres
     environment:
