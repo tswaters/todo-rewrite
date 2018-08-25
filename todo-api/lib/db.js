@@ -13,6 +13,6 @@ exports.query = async (query, values) => {
   }
 }
 
-exports.client = async () => {
+exports.connect = async () => {
   return pool.connect()
 }
