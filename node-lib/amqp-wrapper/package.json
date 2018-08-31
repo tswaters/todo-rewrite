@@ -1,0 +1,30 @@
+{
+  "name": "amqp-wrapper",
+  "description": "wrapper for amqp",
+  "version": "0.0.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "coverage": "nyc npm test",
+    "lint": "eslint .",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "debug": "^3.1.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "proxyquire": "^2.1.0",
+    "sinon": "^6.1.5"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ]
+  }
+}

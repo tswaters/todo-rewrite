@@ -1,5 +1,8 @@
 version: "3.7"
 services:
+  lib-amqp-wrapper:
+    build: ./node-lib/amqp-wrapper
+    image: amqp-wrapper:latest
   api:
     build: todo-api
     command: node index.js
