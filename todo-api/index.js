@@ -7,6 +7,16 @@
 
 const server = require('./server')
 const logger = require('./lib/logger')
+const services = require('./services')
 const {PORT = '3000'} = process.env
 
-server.listen(PORT, () => logger.info(`listening on ${PORT}`))
+;(async () => {
+
+  await services.init()
+  server.listen(PORT, () => logger.info(`listening on ${PORT}`))
+
+})()
+  .catch(err => {
+    logger.fatal(err)
+    process.exit(1)
+  })

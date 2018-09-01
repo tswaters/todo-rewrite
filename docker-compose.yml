@@ -3,8 +3,26 @@ services:
   lib-amqp-wrapper:
     build: ./node-lib/amqp-wrapper
     image: amqp-wrapper:latest
+  todo-auth:
+    build: ./todo-auth
+    command: node index.js
+    environment:
+      LOG_LEVEL: debug
+      NODE_ENV: production
+      AMQP_VHOST: todo
+      AMQP_HOST: rabbitmq
+      PGHOST: postgres
+      PGUSER: todo
+      PGDATABASE: todo
+    secrets:
+      - PGPASSWORD
+      - AMQP_USER
+      - AMQP_PASS
+    depends_on:
+      - lib-amqp-wrapper
+      - rabbitmq
   api:
-    build: todo-api
+    build: ./todo-api
     command: node index.js
     environment:
       NODE_ENV: production
@@ -22,10 +40,11 @@ services:
       - PGPASSWORD
       - SESSION_SECRET
     depends_on:
+      - lib-amqp-wrapper
       - postgres
       - redis
   postgres:
-    build: todo-db
+    build: ./todo-db
     volumes:
       - "pg_data:/var/lib/postgresql/data"
     environment:
@@ -37,7 +56,7 @@ services:
       - PGPASSWORD
       - POSTGRES_PASSWORD
   ddl:
-    build: todo-ddl
+    build: ./todo-ddl
     command: deploy --verify
     depends_on:
       - postgres
@@ -61,9 +80,33 @@ services:
       retries: 5
     sysctls:
       net.core.somaxconn: '511'
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    ports:
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
+      - "15671:15671"
+      - "15672:15672"
+      - "25672:25672"
+    volumes:
+      - "rabbit_data:/var/lib/rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_VHOST: todo
+      RABBITMQ_DEFAULT_USER_FILE: /var/run/secrets/AMQP_USER
+      RABBITMQ_DEFAULT_PASS_FILE: /var/run/secrets/AMQP_PASS
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl node_health_check"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    secrets:
+      - AMQP_USER
+      - AMQP_PASS
 volumes:
   pg_data:
   redis_data:
+  rabbit_data:
 secrets:
   SESSION_SECRET:
     file: .env/SESSION_SECRET
@@ -71,3 +114,7 @@ secrets:
     file: .env/PGPASSWORD
   POSTGRES_PASSWORD:
     file: .env/POSTGRES_PASSWORD
+  AMQP_USER:
+    file: .env/AMQP_USER
+  AMQP_PASS:
+    file: .env/AMQP_PASS

@@ -7,22 +7,18 @@ const sinon = require('sinon')
 const request = require('supertest')
 const proxyquire = require('proxyquire')
 
-describe('auth', () => {
+describe('auth controller', () => {
 
   let server = null
 
-  const revoke_token = sinon.stub()
-  const sign_token = sinon.stub()
-  const query = sinon.stub()
+  const login = sinon.stub()
+  const register = sinon.stub()
 
   beforeEach(done => {
     const auth = proxyquire('../../api/auth', {
-      '../lib/auth': {
-        revoke_token,
-        sign_token
-      },
-      '../lib/db': {
-        query
+      '../services/auth': {
+        login,
+        register
       }
     })
     context.use('/', auth)
@@ -30,9 +26,8 @@ describe('auth', () => {
   })
 
   afterEach(done => {
-    revoke_token.reset()
-    sign_token.reset()
-    query.reset()
+    login.reset()
+    register.reset()
     server.close(done)
   })
 
@@ -40,7 +35,6 @@ describe('auth', () => {
 
     it('should work properly', async () => {
       await request(server).post('/logout')
-      assert.equal(revoke_token.callCount, 1)
     })
 
   })
@@ -56,28 +50,35 @@ describe('auth', () => {
 
     it('fails with no identifier', async () => {
       delete payload.identifier
-      await request(server).post(uri).send(payload).expect(400)
-      assert.equal(query.callCount, 0)
+      await request(server)
+        .post(uri)
+        .send(payload)
+        .expect(400, {status: 400, message: 'identifier must be provided'})
+      assert.equal(login.callCount, 0)
     })
 
     it('fails with no password', async () => {
       delete payload.password
-      await request(server).post(uri).send(payload).expect(400)
-      assert.equal(query.callCount, 0)
+      await request(server)
+        .post(uri)
+        .send(payload)
+        .expect(400, {status: 400, message: 'password must be provided'})
+      assert.equal(login.callCount, 0)
     })
 
-    it('returns failures from db', async () => {
-      query.resolves({rows: []})
-      await request(server).post(uri).send(payload).expect(401)
-      assert.equal(query.callCount, 1)
+    it('returns failures from service', async () => {
+      login.rejects({status: 401, error: 'unauthorized'})
+      await request(server)
+        .post(uri)
+        .send(payload)
+        .expect(401, {status: 401})
+      assert.equal(login.callCount, 1)
     })
 
-    it('returns token upon success', async () => {
-      query.resolves({rows: [{}]})
-      sign_token.resolves({token: 'token'})
-      await request(server).post(uri).send(payload).expect(200, {success: true, token: 'token'})
-      assert.equal(query.callCount, 1)
-      assert.equal(sign_token.callCount, 1)
+    it('logs user in upon success', async () => {
+      login.resolves({user_id: '12345'})
+      await request(server).post(uri).send(payload).expect(200, {success: true})
+      assert.equal(login.callCount, 1)
     })
 
   })
@@ -97,7 +98,7 @@ describe('auth', () => {
         .post(uri)
         .send(payload)
         .expect(400, {status: 400, message: 'identifier must be provided'})
-      assert.equal(query.callCount, 0)
+      assert.equal(register.callCount, 0)
     })
 
     it('fails with no password', async () => {
@@ -106,36 +107,25 @@ describe('auth', () => {
         .post(uri)
         .send(payload)
         .expect(400, {status: 400, message: 'password must be provided'})
-      assert.equal(query.callCount, 0)
+      assert.equal(register.callCount, 0)
     })
 
-    it('returns failures from db', async () => {
-      query.resolves({rows: []})
+    it('returns failures from services', async () => {
+      register.rejects({status: 401, error: 'invalid username or password'})
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(401, {status: 401, message: 'invalid username or password'})
-      assert.equal(query.callCount, 1)
-    })
-
-    it('returns unique constraint specially', async () => {
-      query.rejects({code: '23505'})
-      await request(server)
-        .post(uri)
-        .send(payload)
-        .expect(400, {status: 400, message: 'user account already exists'})
-      assert.equal(query.callCount, 1)
+        .expect(401, {status: 401})
+      assert.equal(register.callCount, 1)
     })
 
     it('returns token upon success', async () => {
-      query.resolves({rows: [{}]})
-      sign_token.resolves({token: 'token'})
+      register.resolves({user_id: '12345'})
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(200, {success: true, token: 'token'})
-      assert.equal(query.callCount, 1)
-      assert.equal(sign_token.callCount, 1)
+        .expect(200, {success: true})
+      assert.equal(register.callCount, 1)
     })
   })
 

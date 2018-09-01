@@ -1,6 +1,17 @@
 
 'use strict'
 
+exports.negotiate = (error, status) => {
+  const orig = typeof error === 'string' ? null : error
+  const msg = typeof error === 'string' ? error : error.message
+  const err = new Err(msg, status || 500)
+  if (orig) {
+    err.original = orig
+    err.stack = `${err.stack}\n\nOriginal Error:\n${orig.stack}`
+  }
+  return err
+}
+
 exports.bad_request = msg => new Err(msg, 400)
 
 exports.unauthorized = msg => new Err(msg, 401)

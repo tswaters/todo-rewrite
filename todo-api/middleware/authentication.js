@@ -1,17 +1,20 @@
 
 'use strict'
 
-const {verify_token} = require('../lib/auth')
+const {unauthorized} = require('../lib/errors')
 
 module.exports = async (req, res, next) => {
   try {
 
-    const {user} = await verify_token(req.headers.token)
+    const user = req.session.user
+
+    if (!user) {
+      throw unauthorized('must be logged in')
+    }
 
     req.user = user
-    req.logger.info(`${user.identifier} authenticated successfully`)
-
     next()
+
   } catch (err) {
 
     next(err)

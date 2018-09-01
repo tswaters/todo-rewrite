@@ -1,43 +1,18 @@
 
 const express = require('express')
-const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
-
 const api = require('./api')
+const session = require('./middleware/session')
 const errors = require('./middleware/errors')
 const loggerMiddleware = require('./middleware/logger')
 const logger = require('./lib/logger')
 const {not_found} = require('./lib/errors')
 const {connect} = require('./lib/db')
-
-const {
-  REDIS_HOST = 'localhost',
-  REDIS_PORT = '6379',
-  REDIS_SESSION_DB = '0',
-  SESSION_SECRET
-} = process.env
+const services = require('./services')
 
 const app = express()
 
-const sessionStore = new RedisStore({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  db: parseInt(REDIS_SESSION_DB, 10)
-})
-
-let session_ready = false
-sessionStore.on('connect', () => session_ready = true)
-sessionStore.on('disconnect', () => session_ready = false)
-
-const sessionMiddleware = session({
-  store: sessionStore,
-  secret: SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-})
-
 app.use(express.json())
-app.use(sessionMiddleware)
+app.use(session.middleware)
 app.use(loggerMiddleware)
 app.use('/api', api)
 
@@ -48,12 +23,16 @@ app.get('/health', async (req, res, next) => {
     client = await connect()
     await client.query('SELECT 1')
   } catch (err) {
-    return next(err)
+    return next(new Error('postgres unavailable'))
   } finally {
     client && client.release()
   }
 
-  if (!session_ready) {
+  if (!services.healthy()) {
+    return next(new Error('services unhealthy'))
+  }
+
+  if (!session.healthy()) {
     return next(new Error('redis unavailable'))
   }
 

@@ -1,0 +1,33 @@
+{
+  "name": "todo-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "coverage": "nyc npm test",
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqp-wrapper": "file:../node-lib/amqp-wrapper",
+    "jsonwebtoken": "^8.3.0",
+    "node-cache": "^4.2.0",
+    "pg": "^7.4.3",
+    "pino": "^5.4.0",
+    "secret-to-env": "^1.0.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "proxyquire": "^2.1.0",
+    "sinon": "^6.1.5"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ]
+  }
+}
