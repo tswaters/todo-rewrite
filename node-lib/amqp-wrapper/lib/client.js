@@ -76,7 +76,13 @@ class Client extends EventEmitter {
     channel.on('close', () => this.emit('channel-close', channel))
     channel.on('error', err => this.emit('channel-error', err))
     channel.on('connect', () => this.emit('channel-connect'))
-    await channel.connect(this.client)
+
+    // on failure, `this.connect` bumps out the stack and `this.client` is null.
+    // channel constructor does have `connect` handler, so it'll setup when it's connected.
+    // this is only the happy path if rabbit is available when we initialize.
+    if (this.client) {
+      await channel.connect(this.client)
+    }
   }
 
   async close () {
