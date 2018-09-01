@@ -18,6 +18,7 @@ class Client extends EventEmitter {
     // when we close, attempt to reconnect
     this.on('close', () => {
       debug('closed')
+      this.client = null
       this.reconnect()
     })
 
@@ -25,20 +26,24 @@ class Client extends EventEmitter {
     this.on('connect', client => {
       debug('connected')
       this.client = client
+      clearInterval(this.interval)
+      this.interval = null
     })
-
   }
 
-  async reconnect () {
-    this.client = null
-    if (!this.closing) {
+  reconnect () {
+    debug('setting up interval %d to reconnect', this.timeout)
+    this.interval = setInterval(() => {
       debug('reconnecting')
-      await new Promise(resolve => setTimeout(resolve, parseInt(this.timeout)))
-      await this.connect()
-    }
+      this.connect()
+    }, this.timeout)
   }
 
   async connect () {
+    if (this.client) {
+      return
+    }
+
     debug('Attempting to connect...')
     try {
 
@@ -61,14 +66,17 @@ class Client extends EventEmitter {
 
       debug(err)
       this.emit('error', err)
-      this.reconnect()
+
+      if (this.interval == null) {
+        this.reconnect()
+      }
 
     }
   }
 
   async channel (init) {
 
-    if (!this.client) {
+    if (this.client == null) {
       await this.connect()
     }
 
@@ -87,6 +95,8 @@ class Client extends EventEmitter {
 
   async close () {
     debug('closing')
+    clearInterval(this.interval)
+    this.interval = null
     this.emit('disconnect') // special event fired before calling close.
     this.closing = true
     if (this.client) {

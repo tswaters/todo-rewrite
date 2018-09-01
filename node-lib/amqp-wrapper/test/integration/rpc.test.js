@@ -13,7 +13,7 @@ describe('rpc integration test', () => {
   let rpc_client = null
 
   beforeEach(() => {
-    clock = sinon.useFakeTimers({toFake: ['setTimeout']})
+    clock = sinon.useFakeTimers({toFake: ['setInterval']})
     client = new Client(RABBIT_URI)
   })
 
@@ -59,7 +59,7 @@ describe('rpc integration test', () => {
   it('client with timeout', async () => {
 
     return client.channel(async ch => {
-      await RpcServer.build(ch, 'echo', () => new Promise(), {prefetch: 1})
+      await RpcServer.build(ch, 'echo', () => new Promise(() => {}), {prefetch: 1})
       rpc_client = await RpcClient.build(ch, 'echo')
     })
       .then(() => {
