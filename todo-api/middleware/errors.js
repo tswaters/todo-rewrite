@@ -15,11 +15,12 @@ module.exports = (err, req, res, next) => {
 
   if (NODE_ENV === 'production' || err.status !== 500) {
     delete err.stack
+    delete err.original
   }
 
-  const {message, stack, status = 500} = err
+  const {message, stack, original, status = 500} = err
 
   logger.error(err)
-  res.status(status).send({status, message, stack})
+  res.status(status).send({status, message, stack, original})
 
 }
