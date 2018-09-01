@@ -68,7 +68,7 @@ describe('client unit test', () => {
     beforeEach(() => {
       client = new Client()
       sinon.stub(client, 'connect')
-      clock = sinon.useFakeTimers({toFake: ['setTimeout']})
+      clock = sinon.useFakeTimers({toFake: ['setInterval']})
     })
 
     afterEach(() => {
@@ -77,14 +77,13 @@ describe('client unit test', () => {
 
     it('should not do anything if closing', async () => {
       client.closing = true
-      await client.reconnect()
+      client.reconnect()
       assert.equal(client.connect.callCount, 0)
     })
 
     it('should connect after timeout', async () => {
-      const promise = client.reconnect()
+      client.reconnect()
       clock.tick(10000)
-      await promise
       assert.equal(client.connect.callCount, 1)
     })
 
@@ -137,7 +136,7 @@ describe('client unit test', () => {
     beforeEach(() => {
       client = new Client()
       client.removeAllListeners()
-      sinon.stub(client, 'connect')
+      sinon.stub(client, 'connect').callsFake(() => client.client = 'non-falsy')
       sinon.spy(client, 'emit')
     })
 
