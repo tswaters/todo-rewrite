@@ -27,12 +27,12 @@ class Channel  extends EventEmitter {
 
   }
 
-  async reconnect () {
+  async reconnect (conn) {
     this.channel = null
     if (!this.closing) {
       await new Promise(resolve => setTimeout(resolve, parseInt(this.timeout)))
       debug('reconnecting')
-      await this.connect()
+      await this.connect(conn)
     }
   }
 
