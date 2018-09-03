@@ -2,10 +2,8 @@ version: "3.7"
 services:
   lib-amqp-wrapper:
     build: ./node-lib/amqp-wrapper
-    image: amqp-wrapper:latest
   lib-auth-helper:
     build: ./node-lib/auth-helper
-    image: auth-helper:latest
   todo-items:
     build: ./todo-items
   todo-auth:
