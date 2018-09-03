@@ -32,6 +32,7 @@ class Client extends EventEmitter {
   }
 
   reconnect () {
+    if (this.interval != null) { return } // safety
     debug('setting up interval %d to reconnect', this.timeout)
     this.interval = setInterval(() => {
       debug('reconnecting')
