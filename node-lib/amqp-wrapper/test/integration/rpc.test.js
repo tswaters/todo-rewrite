@@ -1,6 +1,13 @@
 
 
-const {RABBIT_URI = 'amqp://rabbitmq'} = process.env
+const {
+  AMQP_HOST: hostname = 'localhost',
+  AMQP_USER: username,
+  AMQP_PASS: password,
+  AMQP_VHOST: vhost = 'todo',
+  AMQP_RECONNECT_TIMEOUT: timeout = '10000'
+} = process.env
+
 const assert = require('assert')
 const sinon = require('sinon')
 const {Client, RpcClient, RpcServer} = require('../../index')
@@ -14,7 +21,7 @@ describe('rpc integration test', () => {
 
   beforeEach(() => {
     clock = sinon.useFakeTimers({toFake: ['setInterval']})
-    client = new Client(RABBIT_URI)
+    client = new Client({hostname, username, password, vhost}, {timeout})
   })
 
   afterEach(async () => {

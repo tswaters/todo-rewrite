@@ -1,0 +1,3 @@
+*/test/**/*.test.js
+node-lib/*/test/**/*.test.js
+--exit

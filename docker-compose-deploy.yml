@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  lib-amqp-wrapper:
+    deploy:
+      restart_policy:
+        condition: none
+  lib-auth-helper:
+    deploy:
+      restart_policy:
+        condition: none
+  todo-items:
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+  todo-auth:
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+  todo-api:
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+  nginx:
+    ports:
+      - "3000:80"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+  postgres:
+    deploy:
+      replicas: 1
+  ddl:
+    command: deploy --verify
+    deploy:
+      restart_policy:
+        condition: none
+  redis:
+    deploy:
+      replicas: 1
+  rabbitmq:
+    deploy:
+      replicas: 1
