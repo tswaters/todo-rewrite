@@ -18,6 +18,13 @@ class Channel  extends EventEmitter {
       this.reconnect(conn)
     })
 
+    connection.on('close', () => {
+      debug('connection closed, clearing retry intervals')
+      clearInterval(this.interval)
+      this.connected = false
+      this.interval = null
+    })
+
     // disconnect is special - used to identify a request to close everything (i.e. sigterm)
     // if this is hit, there is no desire to reopen the connection - halt & catch fire.
     connection.on('disconnect', () => {
