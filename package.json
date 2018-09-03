@@ -4,16 +4,34 @@
   "description": "various ways to accomplish a todo application",
   "main": "index.js",
   "scripts": {
-    "pretest": "docker-compose -p todo-test --file docker-compose-test.yml up --build -d",
-    "test": "npm run test:api || echo FAILURE",
-    "test:api": "docker wait todo-test_ddl_1 && docker-compose -p todo-test --file docker-compose-test.yml run --no-deps --rm api npm test",
-    "posttest": "docker-compose -p todo-test --file docker-compose-test.yml down"
+    "build": "docker-compose -f docker-compose.yml -f docker-compose-build.yml build",
+    "coverage": "nyc npm test",
+    "stop": "docker stack rm todo",
+    "prestart": "npm run build",
+    "start": "docker stack deploy todo -c docker-compose.yml -c docker-compose-deploy.yml",
+    "test": "mocha --opts mocha.opts",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^5.3.0",
     "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
     "sinon": "^6.1.4"
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "ignore": [
+      "./todo-api/lib/db.js",
+      "./todo-api/lib/errors.js",
+      "./todo-api/lib/logger.js",
+      "./todo-api/middleware/errors.js",
+      "./todo-api/middleware/logger.js",
+      "./todo-api/test/**"
+    ]
   }
 }
