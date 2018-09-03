@@ -1,14 +1,17 @@
 
+'use strict'
+
+const http = require('http')
+const uuid = require('uuid')
+const path = require('path')
+
 if (process.env.NODE_ENV !== 'test') {
   require('secret-to-env').configSync({
     dir: process.env.NODE_ENV === 'production'
       ? null
-      : '../.env'
+      : path.join(__dirname, '..', '.env')
   })
 }
-
-const http = require('http')
-const uuid = require('uuid')
 
 const app = require('./app')
 const logger = require('./lib/logger')

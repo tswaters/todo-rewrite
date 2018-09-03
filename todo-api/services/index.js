@@ -11,6 +11,7 @@ const {
 const {Client} = require('amqp-wrapper')
 
 const auth = require('./auth')
+const todo = require('./todo')
 const logger = require('../lib/logger').child({log_type: 'amqp'})
 
 let amqp = null
@@ -35,6 +36,7 @@ exports.init = async () => {
   amqp.on('channel-close', () => logger.info('channel closed'))
 
   await amqp.channel(auth.init)
+  await amqp.channel(todo.init)
 }
 
 exports.close = () => amqp.close()
