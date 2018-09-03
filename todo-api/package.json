@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "amqp-wrapper": "file:../node-lib/amqp-wrapper",
+    "auth-helper": "file:../node-lib/auth-helper",
     "chalk": "^2.4.1",
     "connect-redis": "^3.3.3",
     "express": "^4.16.3",
