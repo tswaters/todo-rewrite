@@ -15,10 +15,14 @@ class Channel  extends EventEmitter {
 
     connection.on('connect', conn => {
       debug('connection restablished, connecting channel')
-      this.connect(conn).catch(err => this.emit('error', err))
+      this.reconnect(conn)
     })
 
+    // disconnect is special - used to identify a request to close everything (i.e. sigterm)
+    // if this is hit, there is no desire to reopen the connection - halt & catch fire.
     connection.on('disconnect', () => {
+      clearInterval(this.interval)
+      this.interval = null
       if (!this.connected) { return }
       debug('connection disconnected, closing')
       this.closing = true
@@ -27,12 +31,14 @@ class Channel  extends EventEmitter {
 
   }
 
-  async reconnect (conn) {
-    this.channel = null
+  reconnect (conn) {
+    if (this.interval != null) { return } // safety
+    debug('setting up interval %d to reconnect', this.timeout)
     if (!this.closing) {
-      await new Promise(resolve => setTimeout(resolve, parseInt(this.timeout)))
-      debug('reconnecting')
-      await this.connect(conn)
+      this.interval = setInterval(() => {
+        debug('reconnecting')
+        this.connect(conn)
+      }, parseInt(this.timeout))
     }
   }
 
@@ -49,13 +55,16 @@ class Channel  extends EventEmitter {
       channel.on('close', () => {
         debug('Channel closed')
         this.emit('close')
+        this.reconnect(conn)
       })
 
       debug('calling into setup routine')
       await this.init(channel)
 
-      this.channel = channel
       debug('finished creating channel')
+      clearInterval(this.interval)
+      this.interval = null
+      this.channel = channel
       this.emit('connect')
       this.connected = true
 
@@ -64,13 +73,9 @@ class Channel  extends EventEmitter {
       debug(err)
       this.emit('error', err)
 
-      // attempt to reconnect if we hit an error above.
-      // this doesn't await for the following reasons:
-      //  (1) don't halt application startup
-      //  (2) don't hit callstack limits by using `await`
-      // this will bump the stack out because `reconnect` uses setTimeout
-      // eventually it will connect (assuming amqp is available of course)
-      this.reconnect(conn)
+      if (this.interval == null) {
+        this.reconnect(conn)
+      }
     }
   }
 

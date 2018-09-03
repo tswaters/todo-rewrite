@@ -30,29 +30,17 @@ describe('channel unit test', () => {
   describe('#constructor', () => {
 
     let channel = null
-    let connect_stub = null
 
     beforeEach(() => {
       channel = new Channel(amqp_connection)
-      connect_stub = sinon.stub(channel, 'connect')
+      sinon.stub(channel, 'connect')
+      sinon.stub(channel, 'reconnect')
       channel.channel = amqp_channel
     })
 
     it('should connect properly', () => {
-      connect_stub.resolves()
       amqp_connection.emit('connect')
-      assert.equal(channel.connect.callCount, 1)
-    })
-
-    it('should connect properly with error', done => {
-      connect_stub.rejects(new Error('aw snap'))
-      amqp_connection.emit('connect')
-      assert.equal(channel.connect.callCount, 1)
-      channel.on('error', err => {
-        assert(err)
-        assert.equal(err.message, 'aw snap')
-        done()
-      })
+      assert.equal(channel.reconnect.callCount, 1)
     })
 
     it('should not disconnect if not connected', () => {
@@ -78,7 +66,7 @@ describe('channel unit test', () => {
     beforeEach(() => {
       channel = new Channel(amqp_connection)
       connect_stub = sinon.stub(channel, 'connect')
-      clock = sinon.useFakeTimers({toFake: ['setTimeout']})
+      clock = sinon.useFakeTimers({toFake: ['setInterval']})
     })
 
     afterEach(() => {
