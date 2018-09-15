@@ -11,11 +11,11 @@ module.exports = async msg => {
     const {identifier, password} = msg
 
     if (identifier == null) {
-      return {status: 400, error: 'identifier must be provided'}
+      return {status: 400, error: {code: 'IDENTIFIER_NOT_PROVIDED'}}
     }
 
     if (password == null) {
-      return {status: 400, error: 'password must be provided'}
+      return {status: 400, error: {code: 'PASSWORD_NOT_PROVIDED'}}
     }
 
     logger.info(`Received login request from ${identifier}`)
@@ -28,7 +28,7 @@ module.exports = async msg => {
     )
 
     if (rows.length !== 1) {
-      return {status: 401, error: 'invalid username or password'}
+      return {status: 401, error: {code: 'INVALID_USER'}}
     }
 
     logger.info(`Successfully logged in ${identifier}`)
@@ -36,7 +36,7 @@ module.exports = async msg => {
 
   } catch (error) {
 
-    return {status: 500, message: 'unexpected error', error}
+    return {status: 500, error: {code: 'DATABASE_ERROR', error}}
 
   } finally {
 

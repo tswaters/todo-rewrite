@@ -30,7 +30,7 @@ describe('fetch', () => {
   it('should return auth errors on bad token', async () => {
     verify_token.rejects(new Error('aw snap!'))
     const result = await fetch(payload)
-    assert.deepEqual(result, {status: 401, message: 'bad token', error: new Error('aw snap!')})
+    assert.deepEqual(result, {status: 401, error: {code: 'TOKEN_INVALID', error: new Error('aw snap!')}})
     assert.equal(query.callCount, 0)
   })
 
@@ -43,7 +43,7 @@ describe('fetch', () => {
   it('should return database errors properly', async () => {
     query.rejects(new Error('aw snap!'))
     const result = await fetch(payload)
-    assert.deepEqual(result, {status: 500, message: 'unexpected error', error: new Error('aw snap!')})
+    assert.deepEqual(result, {status: 500, error: {code: 'DATABASE_ERROR', error: new Error('aw snap!')}})
   })
 
 })

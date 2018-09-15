@@ -11,11 +11,11 @@ module.exports = async payload => {
   try {
     user = await verify_token(token)
   } catch (error) {
-    return {status: 401, message: 'bad token', error}
+    return {status: 401, error: {code: 'TOKEN_INVALID', error}}
   }
 
   if (text == null) {
-    return {status: 400, error: 'text must be provided'}
+    return {status: 400, error: {code: 'TEXT_NOT_PROVIDED'}}
   }
 
   logger.debug('create called by by %s with %s', user.user_id, text)
@@ -27,7 +27,7 @@ module.exports = async payload => {
     )
 
     if (result.rows.length === 0) {
-      return {status: 422, error: 'could not add todo'}
+      return {status: 422, error: {code: 'TODO_NOT_ADDED'}}
     }
 
     const {add_todo: todo_id} = result.rows[0]
@@ -35,7 +35,7 @@ module.exports = async payload => {
 
   } catch (error) {
 
-    return {status: 500, message: 'unexpected error', error}
+    return {status: 500, error: {code: 'DATABASE_ERROR', error}}
 
   }
 }

@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
     const user = req.session.user
 
     if (!user) {
-      throw unauthorized('must be logged in')
+      throw unauthorized()
     }
 
     req.user = user

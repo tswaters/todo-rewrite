@@ -9,11 +9,11 @@ module.exports = async msg => {
   const {identifier, password} = msg
 
   if (identifier == null) {
-    return {status: 400, error: 'identifier must be provided'}
+    return {status: 400, error: {code: 'IDENTIFIER_NOT_PROVIDED'}}
   }
 
   if (password == null) {
-    return {status: 400, error: 'password must be provided'}
+    return {status: 400, error: {code: 'PASSWORD_NOT_PROVIDED'}}
   }
 
   logger.info(`Received registration request for ${identifier}`)
@@ -29,7 +29,7 @@ module.exports = async msg => {
     )
 
     if (rows.length !== 1) {
-      return {status: 401, error: 'invalid username or password'}
+      return {status: 401, error: {code: 'INVALID_USER'}}
     }
 
     logger.info(`Successfully registered ${identifier}`)
@@ -39,10 +39,10 @@ module.exports = async msg => {
 
     // 23505 = unique_violation
     if (error.code === '23505') {
-      return {status: 400, error: 'user account already exists'}
+      return {status: 400, error: {code: 'DUPLICATE_USER'}}
     }
 
-    return {status: 500, message: 'unexpected error', error}
+    return {status: 500, error: {code: 'DATABASE_ERROR', error}}
 
   } finally {
 

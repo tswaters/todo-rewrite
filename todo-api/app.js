@@ -42,7 +42,7 @@ app.get('/health', async (req, res, next) => {
 app.locals.logger = logger
 
 app.all('*', (req, res, next) => {
-  next(not_found(`Could not find ${req.path}`))
+  next(not_found(req.path))
 })
 
 app.use(errors)

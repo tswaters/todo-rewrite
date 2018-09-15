@@ -28,7 +28,7 @@ router.post('/', [authentication, async (req, res, next) => {
   req.logger.debug('POST /todo/ with %s', text)
 
   if (text == null) {
-    return next(bad_request('text must be provided'))
+    return next(bad_request('TEXT_NOT_PROVIDED'))
   }
 
   try {
@@ -48,7 +48,7 @@ router.post('/:todo_id/complete', [authentication, async (req, res, next) => {
   req.logger.debug('POST /todo/%s/complete %s', todo_id, complete)
 
   if (complete == null) {
-    return next(bad_request('complete must be provided'))
+    return next(bad_request('COMPLETE_NOT_PROVIDED'))
   }
 
   try {
@@ -67,7 +67,7 @@ router.put('/:todo_id', [authentication, async (req, res, next) => {
   req.logger.debug('PUT /todo/%s with %s', todo_id, text)
 
   if (text == null) {
-    return next(bad_request('text must be provided'))
+    return next(bad_request('TEXT_NOT_PROVIDED'))
   }
 
   try {

@@ -11,7 +11,7 @@ module.exports = async payload => {
   try {
     user = await verify_token(token)
   } catch (error) {
-    return {status: 401, message: 'bad token', error}
+    return {status: 401, error: {code: 'TOKEN_INVALID', error}}
   }
 
   logger.debug('fetch called by %s', user.user_id)
@@ -26,7 +26,7 @@ module.exports = async payload => {
 
   } catch (error) {
 
-    return {status: 500, message: 'unexpected error', error}
+    return {status: 500, error: {code: 'DATABASE_ERROR', error}}
 
   }
 }

@@ -11,11 +11,11 @@ const ensure_params = (req, res, next) => {
   const {identifier, password} = req.body
 
   if (!identifier) {
-    return next(bad_request('identifier must be provided'))
+    return next(bad_request('IDENTIFIER_NOT_PROVIDED'))
   }
 
   if (!password) {
-    return next(bad_request('password must be provided'))
+    return next(bad_request('PASSWORD_NOT_PROVIDED'))
   }
 
   next()

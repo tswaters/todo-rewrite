@@ -32,28 +32,28 @@ describe('complete', () => {
   it('should return auth errors on bad token', async () => {
     verify_token.rejects(new Error('aw snap!'))
     const result = await complete(payload)
-    assert.deepEqual(result, {status: 401, message: 'bad token', error: new Error('aw snap!')})
+    assert.deepEqual(result, {status: 401, error: {code: 'TOKEN_INVALID', error: new Error('aw snap!')}})
     assert.equal(query.callCount, 0)
   })
 
   it('should return bad request if todo_id not provided', async () => {
     delete payload.todo_id
     const result = await complete(payload)
-    assert.deepEqual(result, {status: 400, error: 'todo_id must be provided'})
+    assert.deepEqual(result, {status: 400, error: {code: 'TODO_ID_NOT_PROVIDED'}})
     assert.equal(query.callCount, 0)
   })
 
   it('should return bad request if complete not provided', async () => {
     delete payload.complete
     const result = await complete(payload)
-    assert.deepEqual(result, {status: 400, error: 'complete must be provided'})
+    assert.deepEqual(result, {status: 400, error: {code: 'COMPLETE_NOT_PROVIDED'}})
     assert.equal(query.callCount, 0)
   })
 
   it('should return unprocessable if no rows returned', async () => {
     query.resolves({rows: []})
     const result = await complete(payload)
-    assert.deepEqual(result, {status: 422, error: 'could not complete todo'})
+    assert.deepEqual(result, {status: 422, error: {code: 'TODO_NOT_COMPLETED'}})
   })
 
   it('should return success code', async () => {
@@ -65,7 +65,7 @@ describe('complete', () => {
   it('should return database errors properly', async () => {
     query.rejects(new Error('aw snap!'))
     const result = await complete(payload)
-    assert.deepEqual(result, {status: 500, message: 'unexpected error', error: new Error('aw snap!')})
+    assert.deepEqual(result, {status: 500, error: {code: 'DATABASE_ERROR', error: new Error('aw snap!')}})
   })
 
 })

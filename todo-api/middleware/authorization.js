@@ -6,11 +6,11 @@ const {unauthorized, forbidden} = require('../lib/errors')
 module.exports = roles => (req, res, next) => {
 
   if (!req.user) {
-    return next(unauthorized('invalid user'))
+    return next(unauthorized())
   }
 
   if (!Array.isArray(req.user.roles) || req.user.roles.length === 0) {
-    return next(forbidden('cant do that'))
+    return next(forbidden())
   }
 
   if (req.user.roles.includes('ADMIN')) {
@@ -25,7 +25,7 @@ module.exports = roles => (req, res, next) => {
   }, false)
 
   if (!authorized) {
-    return next(forbidden('cant do that'))
+    return next(forbidden())
   }
 
   req.logger.info(`${req.user.identifier} authorized successfully as {${roles.join(',')}}`)

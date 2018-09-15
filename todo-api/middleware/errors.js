@@ -2,6 +2,7 @@
 'use strict'
 
 const {NODE_ENV} = process.env
+const {Err, negotiate} = require('../lib/errors')
 
 module.exports = (err, req, res, next) => {
 
@@ -13,14 +14,18 @@ module.exports = (err, req, res, next) => {
     ? req.logger
     : req.app.locals.logger
 
-  if (NODE_ENV === 'production' || err.status !== 500) {
-    delete err.stack
-    delete err.original
+  if (!(err instanceof Err)) {
+    err = negotiate(err)
   }
 
-  const {message, stack, original, status = 500} = err
+  const error = err.toJSON(req.locale)
 
-  logger.error(err)
-  res.status(status).send({status, message, stack, original})
+  if (NODE_ENV === 'production' || error.status !== 500) {
+    delete error.stack
+    delete error.original
+  }
+
+  logger.error(error)
+  res.status(error.status).send(error)
 
 }

@@ -1,6 +1,7 @@
 
 'use strict'
 
+const {negotiate} = require('../../lib/errors')
 const {app, context} = require('../server')()
 const assert = require('assert')
 const sinon = require('sinon')
@@ -53,7 +54,11 @@ describe('auth controller', () => {
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(400, {status: 400, message: 'identifier must be provided'})
+        .expect(400, {
+          status: 400,
+          code: 'IDENTIFIER_NOT_PROVIDED',
+          message: 'ERROR.IDENTIFIER_NOT_PROVIDED'
+        })
       assert.equal(login.callCount, 0)
     })
 
@@ -62,16 +67,24 @@ describe('auth controller', () => {
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(400, {status: 400, message: 'password must be provided'})
+        .expect(400, {
+          status: 400,
+          code: 'PASSWORD_NOT_PROVIDED',
+          message: 'ERROR.PASSWORD_NOT_PROVIDED'
+        })
       assert.equal(login.callCount, 0)
     })
 
     it('returns failures from service', async () => {
-      login.rejects({status: 401, error: 'unauthorized'})
+      login.rejects(negotiate({code: 'TOKEN_INVALID'}, 401))
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(401, {status: 401})
+        .expect(401, {
+          status: 401,
+          code: 'TOKEN_INVALID',
+          message: 'ERROR.TOKEN_INVALID'
+        })
       assert.equal(login.callCount, 1)
     })
 
@@ -97,7 +110,11 @@ describe('auth controller', () => {
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(400, {status: 400, message: 'identifier must be provided'})
+        .expect(400, {
+          status: 400,
+          code: 'IDENTIFIER_NOT_PROVIDED',
+          message: 'ERROR.IDENTIFIER_NOT_PROVIDED'
+        })
       assert.equal(register.callCount, 0)
     })
 
@@ -106,16 +123,24 @@ describe('auth controller', () => {
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(400, {status: 400, message: 'password must be provided'})
+        .expect(400, {
+          status: 400,
+          code: 'PASSWORD_NOT_PROVIDED',
+          message: 'ERROR.PASSWORD_NOT_PROVIDED'
+        })
       assert.equal(register.callCount, 0)
     })
 
     it('returns failures from services', async () => {
-      register.rejects({status: 401, error: 'invalid username or password'})
+      register.rejects(negotiate({code: 'TOKEN_INVALID'}, 401))
       await request(server)
         .post(uri)
         .send(payload)
-        .expect(401, {status: 401})
+        .expect(401, {
+          status: 401,
+          code: 'TOKEN_INVALID',
+          message: 'ERROR.TOKEN_INVALID'
+        })
       assert.equal(register.callCount, 1)
     })
 

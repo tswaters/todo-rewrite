@@ -31,21 +31,21 @@ describe('create', () => {
   it('should return auth errors on bad token', async () => {
     verify_token.rejects(new Error('aw snap!'))
     const result = await create(payload)
-    assert.deepEqual(result, {status: 401, message: 'bad token', error: new Error('aw snap!')})
+    assert.deepEqual(result, {status: 401, error: {code: 'TOKEN_INVALID', error: new Error('aw snap!')}})
     assert.equal(query.callCount, 0)
   })
 
   it('should return bad request if text not provided', async () => {
     delete payload.text
     const result = await create(payload)
-    assert.deepEqual(result, {status: 400, error: 'text must be provided'})
+    assert.deepEqual(result, {status: 400, error: {code: 'TEXT_NOT_PROVIDED'}})
     assert.equal(query.callCount, 0)
   })
 
   it('should return unprocessable if no rows returned', async () => {
     query.resolves({rows: []})
     const result = await create(payload)
-    assert.deepEqual(result, {status: 422, error: 'could not add todo'})
+    assert.deepEqual(result, {status: 422, error: {code: 'TODO_NOT_ADDED'}})
   })
 
   it('should return success code', async () => {
@@ -57,7 +57,7 @@ describe('create', () => {
   it('should return database errors properly', async () => {
     query.rejects(new Error('aw snap!'))
     const result = await create(payload)
-    assert.deepEqual(result, {status: 500, message: 'unexpected error', error: new Error('aw snap!')})
+    assert.deepEqual(result, {status: 500, error: {code: 'DATABASE_ERROR', error: new Error('aw snap!')}})
   })
 
 })
