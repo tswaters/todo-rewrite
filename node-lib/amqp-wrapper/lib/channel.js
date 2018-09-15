@@ -39,14 +39,14 @@ class Channel  extends EventEmitter {
   }
 
   reconnect (conn) {
-    if (this.interval != null) { return } // safety
-    debug('setting up interval %d to reconnect', this.timeout)
-    if (!this.closing) {
-      this.interval = setInterval(() => {
-        debug('reconnecting')
-        this.connect(conn)
-      }, parseInt(this.timeout))
+    if (this.interval != null || this.closing) {
+      return
     }
+    debug('setting up interval %d to reconnect', this.timeout)
+    this.interval = setInterval(() => {
+      debug('reconnecting')
+      this.connect(conn)
+    }, parseInt(this.timeout))
   }
 
   async connect (conn) {

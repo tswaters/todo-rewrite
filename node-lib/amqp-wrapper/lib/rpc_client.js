@@ -1,7 +1,5 @@
 'use strict'
 
-const {hostname} = require('os')
-const {pid} = process
 const EventEmitter = require('events')
 const uuid = require('uuid')
 const debug = require('debug')('amqp-wrapper:rpc_client')
@@ -14,7 +12,7 @@ class RpcClient extends EventEmitter {
     return client
   }
 
-  constructor (channel, name, {
+  constructor (channel, queueName, {
     timeout = 500,
     serviceUnavailable = () => ({status: 503, error: 'service unavailable'}),
     gatewayTimeout = () => ({status: 504, error: 'gateway timeout'})
@@ -23,8 +21,7 @@ class RpcClient extends EventEmitter {
     this.timeout = timeout
     this.connected = false
     this.channel = channel
-    this.queueName = `${name}-request`
-    this.replyTo = `${name}-response-${hostname()}-${pid}`
+    this.queueName = queueName
     this.serviceUnavailable = serviceUnavailable
     this.gatewayTimeout = gatewayTimeout
     this.emitter = new EventEmitter()
@@ -46,10 +43,9 @@ class RpcClient extends EventEmitter {
 
   async init () {
 
-    debug('asserting queue %s', this.replyTo)
-    await this.channel.assertQueue(this.replyTo, {exclusive: true})
+    ({queue: this.replyTo} = await this.channel.assertQueue('', {exclusive: true}))
 
-    debug('setting up consumer for %s', this.replyTo)
+    debug('setting up consumer for %s named %s', this.queueName, this.replyTo)
     await this.channel.consume(this.replyTo, msg => {
       if (!msg) { return }
       const {content, properties: {correlationId}} = msg
@@ -75,6 +71,7 @@ class RpcClient extends EventEmitter {
       this.timeouts[correlationId] = setTimeout(() => this.emitter.emit(correlationId, this.gatewayTimeout(msg)), this.timeout)
       this.emitter.once(correlationId, data => { delete this.timeouts[correlationId]; resolve(data) })
 
+      debug('publishing to %s', this.queueName)
       this.channel.sendToQueue(
         this.queueName,
         Buffer.from(JSON.stringify(msg)),

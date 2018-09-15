@@ -13,7 +13,7 @@ class RpcServer extends EventEmitter {
   constructor (channel, queueName, {prefetch = null} = {}) {
     super()
     this.channel = channel
-    this.queueName = `${queueName}-request`
+    this.queueName = queueName
     this.prefetch = prefetch
   }
 
