@@ -7,8 +7,8 @@ let login_client = null
 let register_client = null
 
 exports.init = async channel => {
-  login_client = await RpcClient.build(channel, 'login')
-  register_client = await RpcClient.build(channel, 'register')
+  login_client = await RpcClient.build(channel, 'auth-login')
+  register_client = await RpcClient.build(channel, 'auth-register')
   login_client.on('error', err => logger.error(err))
   register_client.on('error', err => logger.error(err))
 }

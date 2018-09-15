@@ -48,7 +48,7 @@ const things = {complete, create, fetch, remove, restore, update}
 
   await amqp.channel(async channel => Promise.all(
     Object.entries(things).map(async ([key, worker]) => {
-      const server = await RpcServer.build(channel, `todo-${key}`, worker, {prefetch: 1})
+      const server = await RpcServer.build(channel, `items-${key}`, worker, {prefetch: 1})
       server.on('error', err => logger.error(err))
       return server
     })

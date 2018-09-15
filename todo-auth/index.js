@@ -38,8 +38,8 @@ const register = require('./api/register')
   amqp.on('channel-close', () => { logger.info('channel closed'); amqp_healthy = false})
 
   await amqp.channel(async channel => {
-    const login_server = await RpcServer.build(channel, 'login', login, {prefetch: 1})
-    const register_server = await RpcServer.build(channel, 'register', register, {prefetch: 1})
+    const login_server = await RpcServer.build(channel, 'auth-login', login, {prefetch: 1})
+    const register_server = await RpcServer.build(channel, 'auth-register', register, {prefetch: 1})
     login_server.on('error', err => logger.error(err))
     register_server.on('error', err => logger.error(err))
   })

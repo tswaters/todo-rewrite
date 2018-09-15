@@ -13,7 +13,7 @@ exports.init = async channel => Promise.all(
     'restore'
   ].map(async thing => {
 
-    const client = await RpcClient.build(channel, `todo-${thing}`)
+    const client = await RpcClient.build(channel, `items-${thing}`)
     client.on('error', err => logger.error(err))
 
     exports[thing] = async payload => {
