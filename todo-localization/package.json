@@ -1,0 +1,18 @@
+{
+  "name": "todo-localization",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqp-wrapper": "file:../node-lib/amqp-wrapper",
+    "auth-helper": "file:../node-lib/auth-helper",
+    "pg": "^7.4.3",
+    "pino": "^5.4.0",
+    "secret-to-env": "^1.0.1"
+  }
+}

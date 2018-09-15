@@ -17,11 +17,9 @@
     "connect-redis": "^3.3.3",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "jsonwebtoken": "^8.3.0",
-    "node-cache": "^4.2.0",
-    "pg": "^7.4.3",
     "pino": "^4.17.6",
     "secret-to-env": "^1.0.1",
+    "sprintf-js": "^1.1.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -29,6 +27,7 @@
     "eslint": "^5.3.0",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
+    "pg": "^7.4.3",
     "proxyquire": "^2.0.1",
     "sinon": "^6.1.5",
     "supertest": "^3.1.0"

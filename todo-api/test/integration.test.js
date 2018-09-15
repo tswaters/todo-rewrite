@@ -1,12 +1,14 @@
 
 'use strict'
 
+const {Pool} = require('pg')
 const assert = require('assert')
 const request = require('supertest')
 const server = require('../server')
 const services = require('../services')
-const {query} = require('../lib/db')
 const {PORT = '3001'} = process.env
+
+const pool = new Pool()
 
 describe('todo integration', () => {
 
@@ -19,7 +21,7 @@ describe('todo integration', () => {
   })
 
   beforeEach(async () => {
-    await query('TRUNCATE TABLE auth.user CASCADE')
+    await pool.query('TRUNCATE TABLE auth.user CASCADE')
   })
 
   after(async () => {

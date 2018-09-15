@@ -12,6 +12,7 @@ const {Client} = require('amqp-wrapper')
 
 const auth = require('./auth')
 const todo = require('./todo')
+const localization = require('./i18n')
 const logger = require('../lib/logger').child({log_type: 'amqp'})
 
 let amqp = null
@@ -37,6 +38,7 @@ exports.init = async () => {
 
   await amqp.channel(auth.init)
   await amqp.channel(todo.init)
+  await amqp.channel(localization.init)
 }
 
 exports.close = () => amqp.close()

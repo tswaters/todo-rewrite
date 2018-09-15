@@ -1,6 +1,8 @@
 
 'use strict'
 
+const {translate} = require('./i18n')
+
 exports.negotiate = (error, status) => {
   const orig = typeof error === 'string' ? null : error
   const code = typeof error === 'string' ? error : error.code
@@ -36,7 +38,7 @@ class Err extends Error {
   toJSON (locale) {
     return {
       code: this.code,
-      message: this.code,
+      message:  translate(`ERROR.${this.code}`, locale, this.context),
       stack: this.stack,
       status: this.status
     }

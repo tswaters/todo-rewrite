@@ -4,29 +4,20 @@ const api = require('./api')
 const session = require('./middleware/session')
 const errors = require('./middleware/errors')
 const loggerMiddleware = require('./middleware/logger')
+const i18nMiddleware = require('./middleware/i18n')
 const logger = require('./lib/logger')
 const {not_found} = require('./lib/errors')
-const {connect} = require('./lib/db')
 const services = require('./services')
 
 const app = express()
 
 app.use(express.json())
 app.use(session.middleware)
+app.use(i18nMiddleware(['en'], 'en'))
 app.use(loggerMiddleware)
 app.use('/api', api)
 
 app.get('/health', async (req, res, next) => {
-
-  let client = null
-  try {
-    client = await connect()
-    await client.query('SELECT 1')
-  } catch (err) {
-    return next(new Error('postgres unavailable'))
-  } finally {
-    client && client.release()
-  }
 
   if (!services.healthy()) {
     return next(new Error('services unhealthy'))

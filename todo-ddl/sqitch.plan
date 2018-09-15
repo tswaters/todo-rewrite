@@ -16,3 +16,5 @@ todo.proc.update_todo_text [todo.schema todo.table.todo] 2018-08-25T21:57:20Z Ty
 todo.proc.update_todo_complete [todo.schema todo.table.todo] 2018-08-25T22:16:34Z Tyler Waters <tyler.waters@gmail.com> # Adding todo update complete
 todo.proc.update_todo_delete [todo.schema todo.table.todo] 2018-08-25T22:26:36Z Tyler Waters <tyler.waters@gmail.com> # Adding todo update delete
 todo.view.vw_todos [todo.schema todo.table.todo] 2018-08-25T22:32:12Z Tyler Waters <tyler.waters@gmail.com> # Adding todo view
+i18n.proc.update [i18n.schema i18n.table.locale i18n.table.strings] 2018-09-03T23:01:17Z Tyler Waters <tyler.waters@gmail.com> # Adding update localization routine
+i18n.data.error_strings [i18n.schema i18n.table.strings] 2018-09-04T00:58:42Z Tyler Waters <tyler.waters@gmail.com> # Error strings

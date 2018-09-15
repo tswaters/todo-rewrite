@@ -8,11 +8,16 @@
 const server = require('./server')
 const logger = require('./lib/logger')
 const services = require('./services')
+const {fetch} = require('./services/i18n')
+const {init} = require('./lib/i18n')
 const {PORT = '3000'} = process.env
 
 ;(async () => {
 
   await services.init()
+
+  init('en', await fetch({locale: 'en'}))
+
   server.listen(PORT, () => logger.info(`listening on ${PORT}`))
 
 })()
