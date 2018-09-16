@@ -2,6 +2,7 @@
 'use strict'
 
 const {Router} = require('express')
+const {sign_token} = require('auth-helper')
 const authentication = require('../middleware/authentication')
 const authorization = require('../middleware/authorization')
 const {bad_request} = require('../lib/errors')
@@ -42,8 +43,9 @@ router.put('/:key', [authentication, authorization('ADMIN'), async (req, res, ne
     return next(bad_request('LOCALE_NOT_PROVIDED'))
   }
 
+  const token = await sign_token(req.session.user)
   try {
-    await localization.update({key, locale, value})
+    await localization.update({token, key, locale, value})
     res.json({success: true})
   } catch (err) {
     next(err)
