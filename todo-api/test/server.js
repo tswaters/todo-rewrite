@@ -1,8 +1,8 @@
 
 const express = require('express')
 const session = require('express-session')
+const pino = require('pino')
 const errors = require('../middleware/errors')
-const logger_middleware = require('../middleware/logger')
 const logger = require('../lib/logger')
 
 module.exports = () => {
@@ -16,7 +16,10 @@ module.exports = () => {
     saveUninitialized: false
   }))
 
-  app.use(logger_middleware)
+  app.use((req, res, next) => {
+    req.logger = pino({level: 'silent'})
+    next()
+  })
   app.use(context)
   app.get('/tests/clear-session', (req, res) => {
     req.session.destroy()

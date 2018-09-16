@@ -7,7 +7,7 @@ const {LOG_LEVEL: level = 'debug'} = process.env
 const ctx = new chalk.constructor()
 
 const levels = {
-  default: 'USERLVL',
+  default: 'USER',
   60: 'FATAL',
   50: 'ERROR',
   40: 'WARN',
@@ -31,27 +31,21 @@ let transform = null
 if (process.env.NODE_ENV === 'development') {
   transform = pino.pretty({
     formatter: value => {
-      const time = new Date().toJSON()
-      const sid = ctx.white((value.sid ? value.sid : '').padEnd(32))
-      const logLevel = levelColors[value.level](levels[value.level].padEnd(7))
+      let time = new Date().toJSON()
+      time = ctx.gray(time)
 
-      let user = value.connection_id ? value.connection_id : `${' '.repeat(16)}anon${' '.repeat(16)}`
-      user = ctx.white(user)
+      const logLevel = levelColors[value.level](levels[value.level].padEnd(5))
 
-      let type = value.type ? value.type : 'app'
-      if (type === 'Error') { type = (value.status || 500).toString() }
+      let type = value.log_type ? value.log_type : 'app'
       type = ctx.white(type.padEnd(7))
 
-      const msg = value.msg ? ctx.cyan(value.msg) : ''
-      const stack = value.type === 'Error' && value.stack && !value.status ? `\n${value.stack}` : ''
-      return `${time} ${sid} (${user}) ${logLevel}${type}${msg}${stack}`
+      const msg = value.msg ? ctx.cyan(value.msg) : value.message
+      const stack = value.type === 'Error' && value.stack ? `\n${value.stack}` : ''
+
+      return `${time} ${logLevel} ${type} ${msg} ${stack}`
     }
   })
   transform.pipe(process.stdout)
 }
 
-const logger = pino({}, transform)
-
-logger.level = level
-
-module.exports = logger
+module.exports = pino({level}, transform)

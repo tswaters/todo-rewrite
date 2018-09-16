@@ -28,8 +28,9 @@ server.on('connection', connection => {
   connection.idle = true
   connection.id = id
   connections[id] = connection
+  connection_logger(id).trace('Connected')
   connection.on('close', () => {
-    connection_logger(id).debug('Connection is gone')
+    connection_logger(id).trace('Connection is gone')
     delete connections[id]
   })
 })
@@ -39,7 +40,7 @@ server.on('request', ({connection}, res) => {
   res.on('finish', () => {
     connection.idle = true
     if (terminating) {
-      connection_logger(connection.id).debug('Connection is gone')
+      connection_logger(connection.id).trace('Connection is gone')
       connection.destroy()
     }
   })
@@ -59,7 +60,7 @@ function terminate () {
 
   for (const [, connection] of Object.entries(connections)) {
     if (connection.idle) {
-      connection_logger(connection.id).debug('Connection is gone')
+      connection_logger(connection.id).trace('Connection is gone')
       connection.destroy()
     }
   }
