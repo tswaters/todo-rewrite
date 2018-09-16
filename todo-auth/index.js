@@ -1,11 +1,15 @@
 
 'use strict'
 
-require('secret-to-env').configSync({
-  dir: process.env.NODE_ENV === 'production'
-    ? null
-    : '../.env'
-})
+const path = require('path')
+
+if (process.env.NODE_ENV !== 'test') {
+  require('secret-to-env').configSync({
+    dir: process.env.NODE_ENV === 'production'
+      ? null
+      : path.join(__dirname, '..', '.env')
+  })
+}
 
 const {
   HEALTH_CHECK_PORT = '49999',
