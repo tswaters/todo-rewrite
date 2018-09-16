@@ -8,6 +8,7 @@
     "coverage": "nyc npm test",
     "stop": "docker stack rm todo",
     "prestart": "npm run build",
+    "start:deps": "docker-compose -f docker-compose.yml -f docker-compose-dev.yml -f docker-compose-build.yml up --build postgres ddl redis rabbitmq",
     "start": "docker stack deploy todo -c docker-compose.yml -c docker-compose-deploy.yml",
     "test": "mocha --opts mocha.opts",
     "lint": "eslint ."
