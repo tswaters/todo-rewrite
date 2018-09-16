@@ -9,7 +9,9 @@ const authentication = require('../middleware/authentication')
 
 const router = new Router()
 
-router.get('/', [authentication, async (req, res, next) => {
+router.use(authentication)
+
+router.get('/', async (req, res, next) => {
 
   req.logger.debug('GET /todo/')
 
@@ -20,9 +22,9 @@ router.get('/', [authentication, async (req, res, next) => {
   } catch (err) {
     next(err)
   }
-}])
+})
 
-router.post('/', [authentication, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const {text} = req.body
 
   req.logger.debug('POST /todo/ with %s', text)
@@ -39,9 +41,9 @@ router.post('/', [authentication, async (req, res, next) => {
   } catch (err) {
     next(err)
   }
-}])
+})
 
-router.post('/:todo_id/complete', [authentication, async (req, res, next) => {
+router.post('/:todo_id/complete', async (req, res, next) => {
   const {todo_id} = req.params
   const {complete} = req.body
 
@@ -58,9 +60,9 @@ router.post('/:todo_id/complete', [authentication, async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-}])
+})
 
-router.put('/:todo_id', [authentication, async (req, res, next) => {
+router.put('/:todo_id', async (req, res, next) => {
   const {todo_id} = req.params
   const {text} = req.body
 
@@ -77,9 +79,9 @@ router.put('/:todo_id', [authentication, async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-}])
+})
 
-router.delete('/:todo_id', [authentication, async (req, res, next) => {
+router.delete('/:todo_id', async (req, res, next) => {
   const {todo_id} = req.params
 
   req.logger.debug('DELETE /todo/%s with', todo_id)
@@ -91,9 +93,9 @@ router.delete('/:todo_id', [authentication, async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-}])
+})
 
-router.post('/:todo_id/restore', [authentication, async (req, res, next) => {
+router.post('/:todo_id/restore', async (req, res, next) => {
   const {todo_id} = req.params
 
   req.logger.debug('POST /todo/%s/restore', todo_id)
@@ -105,6 +107,6 @@ router.post('/:todo_id/restore', [authentication, async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-}])
+})
 
 module.exports = router
