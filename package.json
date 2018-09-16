@@ -25,13 +25,18 @@
       "text",
       "html"
     ],
-    "ignore": [
-      "./todo-api/lib/db.js",
-      "./todo-api/lib/errors.js",
-      "./todo-api/lib/logger.js",
-      "./todo-api/middleware/errors.js",
-      "./todo-api/middleware/logger.js",
-      "./todo-api/test/**"
+    "exclude": [
+      "*/test/**/*.js",
+      "node-lib/*/test/**/*.js",
+      "*/index.js",
+      "*/server.js",
+      "*/app.js",
+      "*/lib/logger.js",
+      "*/lib/db.js",
+      "*/lib/errors.js",
+      "todo-api/middleware/errors.js",
+      "todo-api/middleware/logger.js",
+      "todo-api/middleware/session.js"
     ]
   }
 }
