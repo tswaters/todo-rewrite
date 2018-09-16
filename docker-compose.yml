@@ -15,6 +15,7 @@ services:
       PGHOST: postgres
       PGUSER: todo
       PGDATABASE: todo
+      HEALTH_CHECK_PORT: 49999
     secrets:
       - PGPASSWORD
       - AMQP_USER
@@ -36,6 +37,7 @@ services:
       PGHOST: postgres
       PGUSER: todo
       PGDATABASE: todo
+      HEALTH_CHECK_PORT: 49999
     secrets:
       - PGPASSWORD
       - AMQP_USER
@@ -58,6 +60,7 @@ services:
       REDIS_HOST: redis
       REDIS_SESSION_DB: 0
       SESSION_TIMEOUT: 900
+      HEALTH_CHECK_PORT: 49999
     secrets:
       - PGPASSWORD
       - SESSION_SECRET
@@ -67,7 +70,9 @@ services:
     depends_on:
       - lib-amqp-wrapper
       - lib-auth-helper
-      - postgres
+      - todo-auth
+      - todo-localization
+      - todo-items
       - redis
   nginx:
     image: todo-lb:latest

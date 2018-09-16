@@ -8,7 +8,7 @@ require('secret-to-env').configSync({
 })
 
 const {
-  PORT = '3000',
+  HEALTH_CHECK_PORT = '49999',
   AMQP_HOST: hostname,
   AMQP_USER: username,
   AMQP_PASS: password,
@@ -67,7 +67,7 @@ const register = require('./api/register')
       res.end()
     }
 
-  }).listen(parseInt(PORT), () => logger.info(`Healthcheck server listening on ${PORT}`))
+  }).listen(parseInt(HEALTH_CHECK_PORT), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT}`))
 
   process.once('SIGTERM', close)
   process.once('SIGINT', close)

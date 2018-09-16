@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 9229
 
-HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD ["/app/check-health.js"]
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD ["/app/check-health.js", "49999"]
