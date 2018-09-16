@@ -18,6 +18,11 @@ services:
       replicas: 2
       restart_policy:
         condition: any
+  todo-localization:
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
   todo-api:
     deploy:
       replicas: 2

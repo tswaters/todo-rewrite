@@ -46,6 +46,26 @@ services:
       - lib-amqp-wrapper
       - rabbitmq
       - postgres
+  todo-localization:
+    image: todo-localization:latest
+    command: node index.js
+    environment:
+      LOG_LEVEL: debug
+      NODE_ENV: production
+      AMQP_VHOST: todo
+      AMQP_HOST: rabbitmq
+      PGHOST: postgres
+      PGUSER: todo
+      PGDATABASE: todo
+      HEALTH_CHECK_PORT: 49999
+    secrets:
+      - PGPASSWORD
+      - AMQP_USER
+      - AMQP_PASS
+    depends_on:
+      - lib-amqp-wrapper
+      - rabbitmq
+      - postgres
   todo-api:
     image: todo-api:latest
     command: node index.js

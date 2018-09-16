@@ -10,6 +10,8 @@ services:
     build: ./todo-auth
   todo-api:
     build: ./todo-api
+  todo-localization:
+    build: ./todo-localization
   nginx:
     build: ./todo-lb
   postgres:
