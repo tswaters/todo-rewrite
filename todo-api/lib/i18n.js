@@ -1,10 +1,14 @@
 
 const {sprintf} = require('sprintf-js')
 
+let is_healthy = false
 const keys = {}
+
+const healthy = () => is_healthy
 
 function init (locale, values) {
   keys[locale] = values
+  is_healthy = true
 }
 
 function get (key, locale) {
@@ -29,4 +33,4 @@ function translate (key, locale, replacements = []) {
   return sprintf(get(key, locale), ...replacements)
 }
 
-module.exports = {init, get, update, translate}
+module.exports = {init, get, update, translate, healthy}

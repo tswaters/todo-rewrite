@@ -10,7 +10,7 @@ const server = require('./server')
 const logger = require('./lib/logger')
 const services = require('./services')
 const {fetch} = require('./services/i18n')
-const {init} = require('./lib/i18n')
+const {init, healthy: i18n_healthy} = require('./lib/i18n')
 const session = require('./middleware/session')
 
 const {PORT='3000', HEALTH_CHECK_PORT = '49996'} = process.env
@@ -29,7 +29,14 @@ const health_server = http.createServer(async (req, res) => {
     return res.end()
   }
 
-  return res.status(200).end('OK')
+  if (!i18n_healthy()) {
+    logger.warn('no i18n keys')
+    res.statusCode = 500
+    return res.end()
+  }
+
+  res.statusCode = 200
+  return res.end('OK')
 
 }).listen(parseInt(HEALTH_CHECK_PORT), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT}`))
 
