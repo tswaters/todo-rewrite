@@ -1,6 +1,7 @@
 {
-  "name": "zzz",
-  "version": "1.0.0",
+  "name": "todo-rewrite",
+  "private": true,
+  "version": "0.0.0",
   "description": "various ways to accomplish a todo application",
   "main": "index.js",
   "scripts": {
@@ -9,6 +10,7 @@
     "stop": "docker stack rm todo",
     "prestart": "npm run build",
     "start:deps": "docker-compose -f docker-compose.yml -f docker-compose-dev.yml -f docker-compose-build.yml up --build postgres ddl redis rabbitmq",
+    "start:dev": "fuge shell",
     "start": "docker stack deploy todo -c docker-compose.yml -c docker-compose-deploy.yml",
     "test": "mocha --opts mocha.opts",
     "lint": "eslint ."
@@ -16,10 +18,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^5.3.0",
+    "eslint": "^5.15.1",
+    "fuge": "^2.0.2",
     "mocha": "^5.2.0",
-    "nyc": "^13.0.1",
-    "sinon": "^6.1.4"
+    "nyc": "^13.3.0",
+    "sinon": "^6.3.5"
   },
   "nyc": {
     "reporter": [

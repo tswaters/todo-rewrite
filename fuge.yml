@@ -1,0 +1,27 @@
+fuge_global:
+  run_containers: false
+  tail: true
+  monitor: true
+  log_path: './.logs'
+  monitor_excludes:
+    - '**/node_modules/**'
+    - '**/.git/**'
+    - '*.log'
+todo-api:
+  type: 'process'
+  path: 'todo-api'
+  run: 'node index'
+todo-auth:
+  type: 'process'
+  path: 'todo-auth'
+  run: 'node index'
+todo-items:
+  type: 'process'
+  path: 'todo-items'
+  run: 'node index'
+todo-localization:
+  type: 'process'
+  path: 'todo-localization'
+  run: 'node index'
+include:
+- ./docker-compose.yml

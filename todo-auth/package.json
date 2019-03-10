@@ -11,18 +11,18 @@
   "license": "ISC",
   "dependencies": {
     "amqp-wrapper": "file:../node-lib/amqp-wrapper",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^8.5.0",
     "node-cache": "^4.2.0",
-    "pg": "^7.4.3",
-    "pino": "^5.4.0",
+    "pg": "^7.8.2",
+    "pino": "^5.11.1",
     "secret-to-env": "^1.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "nyc": "^13.0.1",
+    "nyc": "^13.3.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^6.1.5"
+    "sinon": "^6.3.5"
   },
   "nyc": {
     "reporter": [
