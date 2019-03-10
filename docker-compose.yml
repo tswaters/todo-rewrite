@@ -141,7 +141,7 @@ services:
       timeout: 5s
       retries: 5
     sysctls:
-      net.core.somaxconn: '511'
+      - net.core.somaxconn=511
   rabbitmq:
     image: rabbitmq:management-alpine
     expose:
