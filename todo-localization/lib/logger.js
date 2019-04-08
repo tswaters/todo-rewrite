@@ -1,4 +1,3 @@
+const { LOG_LEVEL: level = 'debug' } = process.env
 
-const {LOG_LEVEL: level = 'debug'} = process.env
-
-module.exports = require('pino')({level})
+module.exports = require('pino')({ level })

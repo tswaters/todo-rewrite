@@ -1,7 +1,6 @@
-
 const logger = require('../lib/logger')
-const {negotiate} = require('../lib/errors')
-const {RpcClient} = require('amqp-wrapper')
+const { negotiate } = require('../lib/errors')
+const { RpcClient } = require('amqp-wrapper')
 
 let login_client = null
 let register_client = null

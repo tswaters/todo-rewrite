@@ -3,9 +3,8 @@
 const EventEmitter = require('events')
 const debug = require('debug')('amqp-wrapper:channel')
 
-class Channel  extends EventEmitter {
-
-  constructor (connection, init, timeout = 10000) {
+class Channel extends EventEmitter {
+  constructor(connection, init, timeout = 10000) {
     super()
     this.init = init
     this.timeout = timeout
@@ -30,15 +29,16 @@ class Channel  extends EventEmitter {
     connection.on('disconnect', () => {
       clearInterval(this.interval)
       this.interval = null
-      if (!this.connected) { return }
+      if (!this.connected) {
+        return
+      }
       debug('connection disconnected, closing')
       this.closing = true
       this.channel.close()
     })
-
   }
 
-  reconnect (conn) {
+  reconnect(conn) {
     if (this.interval != null || this.closing) {
       return
     }
@@ -49,7 +49,7 @@ class Channel  extends EventEmitter {
     }, parseInt(this.timeout))
   }
 
-  async connect (conn) {
+  async connect(conn) {
     try {
       debug('attempting to create new channel')
       const channel = await conn.createConfirmChannel()
@@ -74,7 +74,6 @@ class Channel  extends EventEmitter {
       this.channel = channel
       this.emit('connect')
       this.connected = true
-
     } catch (err) {
       debug('Failed to establish channel!')
       debug(err)
@@ -85,7 +84,6 @@ class Channel  extends EventEmitter {
       }
     }
   }
-
 }
 
 module.exports = Channel

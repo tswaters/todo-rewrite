@@ -1,4 +1,3 @@
-
 'use strict'
 
 const http = require('http')
@@ -7,9 +6,10 @@ const path = require('path')
 
 if (process.env.NODE_ENV !== 'test') {
   require('secret-to-env').configSync({
-    dir: process.env.NODE_ENV === 'production'
-      ? null
-      : path.join(__dirname, '..', '.env')
+    dir:
+      process.env.NODE_ENV === 'production'
+        ? null
+        : path.join(__dirname, '..', '.env'),
   })
 }
 
@@ -21,7 +21,7 @@ let terminating = false
 
 const server = http.createServer(app)
 
-const connection_logger = connection_id => logger.child({connection_id})
+const connection_logger = connection_id => logger.child({ connection_id })
 
 server.on('connection', connection => {
   const id = uuid.v4()
@@ -35,7 +35,7 @@ server.on('connection', connection => {
   })
 })
 
-server.on('request', ({connection}, res) => {
+server.on('request', ({ connection }, res) => {
   connection.idle = false
   res.on('finish', () => {
     connection.idle = true
@@ -49,7 +49,7 @@ server.on('request', ({connection}, res) => {
 process.on('SIGTERM', terminate)
 process.on('SIGINT', terminate)
 
-function terminate () {
+function terminate() {
   logger.info('Server is shutting down...')
   terminating = true
 

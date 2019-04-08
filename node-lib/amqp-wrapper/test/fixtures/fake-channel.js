@@ -1,32 +1,17 @@
-
 const EventEmitter = require('events')
 
 class FakeChannel extends EventEmitter {
+  assertQueue() {}
 
-  assertQueue () {
+  consume() {}
 
-  }
+  nack() {}
 
-  consume () {
+  ack() {}
 
-  }
+  sendToQueue() {}
 
-  nack () {
-
-  }
-
-  ack () {
-
-  }
-
-  sendToQueue () {
-
-  }
-
-  close () {
-
-  }
-
+  close() {}
 }
 
 module.exports = FakeChannel

@@ -1,23 +1,20 @@
-
-
 const {
   AMQP_HOST: hostname = 'localhost',
   AMQP_USER: username,
   AMQP_PASS: password,
   AMQP_VHOST: vhost = 'todo',
-  AMQP_RECONNECT_TIMEOUT: timeout = '10000'
+  AMQP_RECONNECT_TIMEOUT: timeout = '10000',
 } = process.env
 
 const EventEmitter = require('events')
 const assert = require('assert')
-const {Client, Publisher, Subscriber} = require('../../index')
+const { Client, Publisher, Subscriber } = require('../../index')
 
 describe('pubsub integration test', () => {
-
   let client = null
 
   beforeEach(() => {
-    client = new Client({hostname, username, password, vhost}, {timeout})
+    client = new Client({ hostname, username, password, vhost }, { timeout })
   })
 
   afterEach(async () => {
@@ -25,13 +22,12 @@ describe('pubsub integration test', () => {
   })
 
   it('happy path', async () => {
-
     let publisher = null
     const emitter = new EventEmitter()
 
     const worker = msg => {
       try {
-        assert.deepEqual(msg, {success: true})
+        assert.deepEqual(msg, { success: true })
         emitter.emit('done')
       } catch (err) {
         emitter.emit('error', err)
@@ -48,14 +44,12 @@ describe('pubsub integration test', () => {
       await Subscriber.build(ch, 'fanout-test', worker)
     })
 
-    await publisher.publish({success: true})
+    await publisher.publish({ success: true })
 
     await waiter
-
   })
 
   it('nacking messages', async () => {
-
     let subscriber = null
     let publisher = null
     let call = 0
@@ -66,7 +60,7 @@ describe('pubsub integration test', () => {
         throw new Error('aw snap!')
       } else {
         try {
-          assert.deepEqual(msg, {success: true})
+          assert.deepEqual(msg, { success: true })
           emitter.emit('done')
         } catch (err) {
           emitter.emit('error', err)
@@ -85,10 +79,8 @@ describe('pubsub integration test', () => {
       subscriber.on('error', () => {})
     })
 
-    await publisher.publish({success: true})
+    await publisher.publish({ success: true })
 
     await waiter
-
   })
-
 })

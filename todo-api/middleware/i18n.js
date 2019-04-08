@@ -1,32 +1,35 @@
-
-function parseAcceptLanguage (str, supported_langs) {
-
-  if (!str || !str.split) { return null }
+function parseAcceptLanguage(str, supported_langs) {
+  if (!str || !str.split) {
+    return null
+  }
 
   return str
 
     .split(',')
 
     .map(raw => {
-
       const [lang, extra = 'q=1.0'] = raw.split(';')
       const quality = parseFloat(extra.split('=')[1]) || 1
-      return {lang, quality}
-
+      return { lang, quality }
     })
 
     .sort((a, b) => {
-
-      if (a.quality < b.quality) { return 1 }
-      if (a.quality === b.quality) { return 0 }
-      else { return -1 }
-
+      if (a.quality < b.quality) {
+        return 1
+      }
+      if (a.quality === b.quality) {
+        return 0
+      } else {
+        return -1
+      }
     })
 
     .map(language => language.lang.toLowerCase())
 
     .reduce((memo, lang) => {
-      if (memo) { return memo }
+      if (memo) {
+        return memo
+      }
 
       if (supported_langs.indexOf(lang) > 0) {
         return lang
@@ -39,9 +42,7 @@ function parseAcceptLanguage (str, supported_langs) {
       }
 
       return null
-
     }, null)
-
 }
 
 module.exports = (supported_langs, default_lang) => (req, res, next) => {

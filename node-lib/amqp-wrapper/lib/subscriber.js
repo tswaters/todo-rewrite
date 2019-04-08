@@ -1,27 +1,28 @@
-
 const EventEmitter = require('events')
 const debug = require('debug')('amqp-wrapper:subscriber')
 
 class Subscriber extends EventEmitter {
-
-  static async build (channel, exchange, worker) {
+  static async build(channel, exchange, worker) {
     const publisher = new Subscriber(channel, exchange)
     await publisher.init(worker)
     return publisher
   }
 
-  constructor (channel, exchange) {
+  constructor(channel, exchange) {
     super()
     this.exchange = exchange
     this.channel = channel
   }
 
-  async init (worker) {
-
+  async init(worker) {
     debug('asserting fanout exchange %s', this.exchange)
-    await this.channel.assertExchange(this.exchange, 'fanout', {durable: false, autoDelete: true})
-
-    ;({queue: this.queueName} = await this.channel.assertQueue('', {exclusive: true}))
+    await this.channel.assertExchange(this.exchange, 'fanout', {
+      durable: false,
+      autoDelete: true,
+    })
+    ;({ queue: this.queueName } = await this.channel.assertQueue('', {
+      exclusive: true,
+    }))
     debug('asserted queue %s', this.queueName)
 
     await this.channel.bindQueue(this.queueName, this.exchange, '')
@@ -37,7 +38,6 @@ class Subscriber extends EventEmitter {
       }
     })
   }
-
 }
 
 module.exports = Subscriber

@@ -1,4 +1,3 @@
-
 const express = require('express')
 const api = require('./api')
 const session = require('./middleware/session')
@@ -6,7 +5,7 @@ const errors = require('./middleware/errors')
 const loggerMiddleware = require('./middleware/logger')
 const i18nMiddleware = require('./middleware/i18n')
 const logger = require('./lib/logger')
-const {not_found} = require('./lib/errors')
+const { not_found } = require('./lib/errors')
 
 const app = express()
 app.use(express.json())

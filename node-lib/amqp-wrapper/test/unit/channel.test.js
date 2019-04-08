@@ -1,4 +1,3 @@
-
 'use strict'
 
 const assert = require('assert')
@@ -11,7 +10,6 @@ const FakeChannel = require('../fixtures/fake-channel')
 const init = async () => {}
 
 describe('channel unit test', () => {
-
   let amqp_connection = null
   let amqp_channel = null
 
@@ -28,7 +26,6 @@ describe('channel unit test', () => {
   })
 
   describe('#constructor', () => {
-
     let channel = null
 
     beforeEach(() => {
@@ -54,11 +51,9 @@ describe('channel unit test', () => {
       assert.equal(amqp_channel.close.callCount, 1)
       assert.equal(channel.closing, true)
     })
-
   })
 
   describe('#reconnect', () => {
-
     let channel = null
     let connect_stub = null
     let clock = null
@@ -66,7 +61,7 @@ describe('channel unit test', () => {
     beforeEach(() => {
       channel = new Channel(amqp_connection)
       connect_stub = sinon.stub(channel, 'connect')
-      clock = sinon.useFakeTimers({toFake: ['setInterval']})
+      clock = sinon.useFakeTimers({ toFake: ['setInterval'] })
     })
 
     afterEach(() => {
@@ -85,11 +80,9 @@ describe('channel unit test', () => {
       await promise
       assert.equal(connect_stub.callCount, 1)
     })
-
   })
 
   describe('#connect', () => {
-
     let channel = null
     let reconnect_stub = null
 
@@ -119,12 +112,10 @@ describe('channel unit test', () => {
 
     it('should handle errors and attempt to reconnect', async () => {
       amqp_connection.createConfirmChannel.rejects(new Error('aw snap!'))
-      channel.on('error', err => assert.equal(err.message, 'aw snap!') )
+      channel.on('error', err => assert.equal(err.message, 'aw snap!'))
       await channel.connect(amqp_connection, init)
       assert.equal(channel.connected, false)
       assert.equal(reconnect_stub.callCount, 1)
     })
-
   })
-
 })

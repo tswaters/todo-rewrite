@@ -1,4 +1,3 @@
-
 'use strict'
 
 const assert = require('assert')
@@ -9,7 +8,6 @@ const FakeChannel = require('../fixtures/fake-channel')
 const Channel = require('../../lib/channel')
 
 describe('client unit test', () => {
-
   let Client = null
   let connection = null
   let channel = null
@@ -29,8 +27,8 @@ describe('client unit test', () => {
 
     connect_stub.resolves(connection)
     Client = proxyquire('../../lib/client', {
-      amqplib: {connect: connect_stub},
-      './channel': sinon.stub().returns(channel)
+      amqplib: { connect: connect_stub },
+      './channel': sinon.stub().returns(channel),
     })
   })
 
@@ -39,7 +37,6 @@ describe('client unit test', () => {
   })
 
   describe('#constructor', () => {
-
     let client = null
     let reconnect_stub = null
 
@@ -57,18 +54,16 @@ describe('client unit test', () => {
       client.emit('connect', connection)
       assert.equal(client.client, connection)
     })
-
   })
 
   describe('#reconnect', () => {
-
     let client = null
     let clock = null
 
     beforeEach(() => {
       client = new Client()
       sinon.stub(client, 'connect')
-      clock = sinon.useFakeTimers({toFake: ['setInterval']})
+      clock = sinon.useFakeTimers({ toFake: ['setInterval'] })
     })
 
     afterEach(() => {
@@ -86,11 +81,9 @@ describe('client unit test', () => {
       clock.tick(10000)
       assert.equal(client.connect.callCount, 1)
     })
-
   })
 
   describe('#connect', () => {
-
     let client = null
 
     beforeEach(() => {
@@ -126,17 +119,17 @@ describe('client unit test', () => {
       assert.equal(client.emit.firstCall.args[0], 'error')
       assert.equal(client.emit.firstCall.args[1].message, 'aw snap!')
     })
-
   })
 
   describe('#channel', () => {
-
     let client = null
 
     beforeEach(() => {
       client = new Client()
       client.removeAllListeners()
-      sinon.stub(client, 'connect').callsFake(() => client.client = 'non-falsy')
+      sinon
+        .stub(client, 'connect')
+        .callsFake(() => (client.client = 'non-falsy'))
       sinon.spy(client, 'emit')
     })
 
@@ -174,11 +167,9 @@ describe('client unit test', () => {
       assert.equal(client.emit.callCount, 1)
       assert.equal(client.emit.firstCall.args[0], 'channel-connect')
     })
-
   })
 
   describe('#close', () => {
-
     let client = null
 
     beforeEach(() => {
@@ -201,5 +192,4 @@ describe('client unit test', () => {
       assert.equal(connection.close.callCount, 1)
     })
   })
-
 })

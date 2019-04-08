@@ -1,7 +1,6 @@
-
 'use strict'
 
-const {translate} = require('./i18n')
+const { translate } = require('./i18n')
 
 exports.negotiate = (error, status) => {
   const orig = typeof error === 'string' ? null : error
@@ -27,7 +26,6 @@ exports.unprocessable = code => new Err(code, 422)
 exports.unhandled = code => new Err(code, 500)
 
 class Err extends Error {
-
   constructor(code, status, context) {
     super(code)
     this.code = code
@@ -35,15 +33,14 @@ class Err extends Error {
     this.context = context
   }
 
-  toJSON (locale) {
+  toJSON(locale) {
     return {
       code: this.code,
-      message:  translate(`ERROR.${this.code}`, locale, this.context),
+      message: translate(`ERROR.${this.code}`, locale, this.context),
       stack: this.stack,
-      status: this.status
+      status: this.status,
     }
   }
-
 }
 
 exports.Err = Err

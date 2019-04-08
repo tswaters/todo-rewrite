@@ -1,11 +1,9 @@
-
 'use strict'
 
-const {unauthorized} = require('../lib/errors')
+const { unauthorized } = require('../lib/errors')
 
 module.exports = async (req, res, next) => {
   try {
-
     const user = req.session.user
 
     if (!user) {
@@ -14,10 +12,7 @@ module.exports = async (req, res, next) => {
 
     req.user = user
     next()
-
   } catch (err) {
-
     next(err)
-
   }
 }

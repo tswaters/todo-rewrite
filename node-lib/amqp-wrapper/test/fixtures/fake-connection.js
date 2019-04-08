@@ -1,22 +1,13 @@
-
 'use strict'
 
 const EventEmitter = require('events')
 
 class FakeConnection extends EventEmitter {
+  connect() {}
 
-  connect () {
+  close() {}
 
-  }
-
-  close () {
-
-  }
-
-  createConfirmChannel () {
-
-  }
-
+  createConfirmChannel() {}
 }
 
 module.exports = FakeConnection

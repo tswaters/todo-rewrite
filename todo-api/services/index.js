@@ -5,15 +5,15 @@ const {
   AMQP_USER: username,
   AMQP_PASS: password,
   AMQP_VHOST: vhost = 'todo',
-  AMQP_RECONNECT_TIMEOUT: timeout = '10000'
+  AMQP_RECONNECT_TIMEOUT: timeout = '10000',
 } = process.env
 
-const {Client} = require('amqp-wrapper')
+const { Client } = require('amqp-wrapper')
 
 const auth = require('./auth')
 const todo = require('./todo')
 const localization = require('./i18n')
-const logger = require('../lib/logger').child({log_type: 'amqp'})
+const logger = require('../lib/logger').child({ log_type: 'amqp' })
 
 let amqp = null
 let amqp_healthy = false
@@ -28,11 +28,20 @@ async function terminate() {
 exports.healthy = () => amqp_healthy
 
 exports.init = async () => {
-  amqp = new Client({protocol: 'amqp', hostname, username, password, vhost}, {timeout})
+  amqp = new Client(
+    { protocol: 'amqp', hostname, username, password, vhost },
+    { timeout }
+  )
   amqp.on('error', err => logger.error(err))
   amqp.on('channel-error', err => logger.error(err))
-  amqp.on('connect', () => { logger.info('amqp is connected');  amqp_healthy = true})
-  amqp.on('close', () => { logger.info('amqp connection closed'); amqp_healthy = false})
+  amqp.on('connect', () => {
+    logger.info('amqp is connected')
+    amqp_healthy = true
+  })
+  amqp.on('close', () => {
+    logger.info('amqp connection closed')
+    amqp_healthy = false
+  })
   amqp.on('channel-connect', () => logger.info('channel connected'))
   amqp.on('channel-close', () => logger.info('channel closed'))
 

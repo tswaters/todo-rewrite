@@ -1,18 +1,14 @@
-
 'use strict'
 
-const {NODE_ENV} = process.env
-const {Err, negotiate} = require('../lib/errors')
+const { NODE_ENV } = process.env
+const { Err, negotiate } = require('../lib/errors')
 
 module.exports = (err, req, res, next) => {
-
   if (res.headersSent) {
     return next(err)
   }
 
-  const logger = req.logger
-    ? req.logger
-    : req.app.locals.logger
+  const logger = req.logger ? req.logger : req.app.locals.logger
 
   if (!(err instanceof Err)) {
     err = negotiate(err)
@@ -27,5 +23,4 @@ module.exports = (err, req, res, next) => {
 
   logger.error(error)
   res.status(error.status).send(error)
-
 }

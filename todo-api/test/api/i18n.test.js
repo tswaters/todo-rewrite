@@ -1,15 +1,13 @@
-
 'use strict'
 
-const {app, context} = require('../server')()
+const { app, context } = require('../server')()
 const assert = require('assert')
 const sinon = require('sinon')
 const request = require('supertest')
 const proxyquire = require('proxyquire')
-const {negotiate} = require('../../lib/errors')
+const { negotiate } = require('../../lib/errors')
 
 describe('i18n controller', () => {
-
   let server = null
 
   const fetch = sinon.stub()
@@ -17,7 +15,7 @@ describe('i18n controller', () => {
 
   beforeEach(done => {
     const localization = proxyquire('../../api/i18n', {
-      '../services/i18n': {fetch, update}
+      '../services/i18n': { fetch, update },
     })
     context.use('/', localization)
     server = app.listen(3001, done)
@@ -30,12 +28,11 @@ describe('i18n controller', () => {
   })
 
   describe('fetch', () => {
-
     const uri = '/'
     let payload = null
 
     beforeEach(() => {
-      payload = {locale: 'en', keys: ['test 1', 'test 2']}
+      payload = { locale: 'en', keys: ['test 1', 'test 2'] }
     })
 
     it('fails with no locale', async () => {
@@ -46,7 +43,7 @@ describe('i18n controller', () => {
         .expect(400, {
           status: 400,
           code: 'LOCALE_NOT_PROVIDED',
-          message: 'ERROR.LOCALE_NOT_PROVIDED'
+          message: 'ERROR.LOCALE_NOT_PROVIDED',
         })
       assert.equal(fetch.callCount, 0)
     })
@@ -59,7 +56,7 @@ describe('i18n controller', () => {
         .expect(400, {
           status: 400,
           code: 'LOCALE_NOT_PROVIDED',
-          message: 'ERROR.LOCALE_NOT_PROVIDED'
+          message: 'ERROR.LOCALE_NOT_PROVIDED',
         })
       assert.equal(fetch.callCount, 0)
     })
@@ -72,13 +69,13 @@ describe('i18n controller', () => {
         .expect(400, {
           status: 400,
           code: 'LOCALE_NOT_PROVIDED',
-          message: 'ERROR.LOCALE_NOT_PROVIDED'
+          message: 'ERROR.LOCALE_NOT_PROVIDED',
         })
       assert.equal(fetch.callCount, 0)
     })
 
     it('returns failures from db', async () => {
-      fetch.rejects(negotiate({code: 'DATABASE_ERROR'}, 500))
+      fetch.rejects(negotiate({ code: 'DATABASE_ERROR' }, 500))
       await request(server)
         .get(uri)
         .query(payload)
@@ -90,15 +87,12 @@ describe('i18n controller', () => {
     })
 
     it('returns keys upon success', async () => {
-      fetch.resolves({'test 1': 'value 1', 'test 2': 'value 2'})
+      fetch.resolves({ 'test 1': 'value 1', 'test 2': 'value 2' })
       await request(server)
         .get(uri)
         .query(payload)
-        .expect(200, {'test 1': 'value 1', 'test 2': 'value 2'})
+        .expect(200, { 'test 1': 'value 1', 'test 2': 'value 2' })
       assert.equal(fetch.callCount, 1)
     })
-
   })
-
 })
-

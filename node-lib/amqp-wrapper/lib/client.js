@@ -7,8 +7,7 @@ const debug = require('debug')('amqp-wrapper:client')
 const Channel = require('./channel')
 
 class Client extends EventEmitter {
-
-  constructor (amqpConn, {timeout = 10000} = {}) {
+  constructor(amqpConn, { timeout = 10000 } = {}) {
     super()
     this.client = null
     this.connObj = amqpConn
@@ -31,7 +30,7 @@ class Client extends EventEmitter {
     })
   }
 
-  reconnect () {
+  reconnect() {
     if (this.interval != null || this.closing) {
       return
     }
@@ -43,14 +42,13 @@ class Client extends EventEmitter {
     }, this.timeout)
   }
 
-  async connect () {
+  async connect() {
     if (this.client) {
       return
     }
 
     debug('Attempting to connect...')
     try {
-
       const client = await amqp.connect(this.connObj)
 
       client.on('error', err => {
@@ -65,21 +63,17 @@ class Client extends EventEmitter {
 
       debug('Finished connecting')
       this.emit('connect', client)
-
     } catch (err) {
-
       debug(err)
       this.emit('error', err)
 
       if (this.interval == null) {
         this.reconnect()
       }
-
     }
   }
 
-  async channel (init) {
-
+  async channel(init) {
     if (this.client == null) {
       await this.connect()
     }
@@ -97,7 +91,7 @@ class Client extends EventEmitter {
     }
   }
 
-  async close () {
+  async close() {
     debug('closing')
     clearInterval(this.interval)
     this.interval = null
@@ -107,7 +101,6 @@ class Client extends EventEmitter {
       await this.client.close()
     }
   }
-
 }
 
 module.exports = Client

@@ -1,10 +1,8 @@
-
 'use strict'
 
-const {unauthorized, forbidden} = require('../lib/errors')
+const { unauthorized, forbidden } = require('../lib/errors')
 
 module.exports = roles => (req, res, next) => {
-
   if (!req.user) {
     return next(unauthorized())
   }
@@ -19,8 +17,12 @@ module.exports = roles => (req, res, next) => {
   }
 
   const authorized = roles.reduce((memo, role) => {
-    if (memo) { return memo }
-    if (req.user.roles.includes(role)) { return true }
+    if (memo) {
+      return memo
+    }
+    if (req.user.roles.includes(role)) {
+      return true
+    }
     return false
   }, false)
 
@@ -28,7 +30,9 @@ module.exports = roles => (req, res, next) => {
     return next(forbidden())
   }
 
-  req.logger.info(`${req.user.identifier} authorized successfully as {${roles.join(',')}}`)
+  req.logger.info(
+    `${req.user.identifier} authorized successfully as {${roles.join(',')}}`
+  )
 
   next()
 }
