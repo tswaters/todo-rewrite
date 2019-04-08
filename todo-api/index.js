@@ -13,7 +13,7 @@ const {fetch} = require('./services/i18n')
 const {init, healthy: i18n_healthy} = require('./lib/i18n')
 const session = require('./middleware/session')
 
-const {PORT='3000', HEALTH_CHECK_PORT = '49996'} = process.env
+const {PORT='3000', HEALTH_CHECK_PORT_API = '49996'} = process.env
 
 const health_server = http.createServer(async (req, res) => {
 
@@ -38,7 +38,7 @@ const health_server = http.createServer(async (req, res) => {
   res.statusCode = 200
   return res.end('OK')
 
-}).listen(parseInt(HEALTH_CHECK_PORT), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT}`))
+}).listen(parseInt(HEALTH_CHECK_PORT_API), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT_API}`))
 
 process.on('SIGTERM', terminate)
 process.on('SIGINT', terminate)

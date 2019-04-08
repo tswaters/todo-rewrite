@@ -15,7 +15,7 @@ services:
       PGHOST: postgres
       PGUSER: todo
       PGDATABASE: todo
-      HEALTH_CHECK_PORT: 49999
+      HEALTH_CHECK_PORT_ITEMS: 49999
     secrets:
       - PGPASSWORD
       - AMQP_USER
@@ -37,7 +37,7 @@ services:
       PGHOST: postgres
       PGUSER: todo
       PGDATABASE: todo
-      HEALTH_CHECK_PORT: 49999
+      HEALTH_CHECK_PORT_AUTH: 49999
     secrets:
       - PGPASSWORD
       - AMQP_USER
@@ -57,7 +57,7 @@ services:
       PGHOST: postgres
       PGUSER: todo
       PGDATABASE: todo
-      HEALTH_CHECK_PORT: 49999
+      HEALTH_CHECK_PORT_I18N: 49999
     secrets:
       - PGPASSWORD
       - AMQP_USER
@@ -80,7 +80,7 @@ services:
       REDIS_HOST: redis
       REDIS_SESSION_DB: 0
       SESSION_TIMEOUT: 900
-      HEALTH_CHECK_PORT: 49999
+      HEALTH_CHECK_PORT_API: 49999
     secrets:
       - PGPASSWORD
       - SESSION_SECRET

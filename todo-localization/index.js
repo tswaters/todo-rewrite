@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const {
-  HEALTH_CHECK_PORT = '49997',
+  HEALTH_CHECK_PORT_I18N = '49997',
   AMQP_HOST: hostname = 'localhost',
   AMQP_USER: username,
   AMQP_PASS: password,
@@ -83,7 +83,7 @@ const fetch = require('./api/fetch')
       res.end()
     }
 
-  }).listen(parseInt(HEALTH_CHECK_PORT), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT}`))
+  }).listen(parseInt(HEALTH_CHECK_PORT_I18N), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT_I18N}`))
 
   process.once('SIGTERM', close)
   process.once('SIGINT', close)

@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const {
-  HEALTH_CHECK_PORT = '49998',
+  HEALTH_CHECK_PORT_ITEMS = '49998',
   AMQP_HOST: hostname = 'localhost',
   AMQP_USER: username,
   AMQP_PASS: password,
@@ -77,7 +77,7 @@ const things = {complete, create, fetch, remove, restore, update}
       res.end()
     }
 
-  }).listen(parseInt(HEALTH_CHECK_PORT), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT}`))
+  }).listen(parseInt(HEALTH_CHECK_PORT_ITEMS), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT_ITEMS}`))
 
   process.once('SIGTERM', close)
   process.once('SIGINT', close)

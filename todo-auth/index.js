@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const {
-  HEALTH_CHECK_PORT = '49999',
+  HEALTH_CHECK_PORT_AUTH = '49999',
   AMQP_HOST: hostname,
   AMQP_USER: username,
   AMQP_PASS: password,
@@ -71,7 +71,7 @@ const register = require('./api/register')
       res.end()
     }
 
-  }).listen(parseInt(HEALTH_CHECK_PORT), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT}`))
+  }).listen(parseInt(HEALTH_CHECK_PORT_AUTH), () => logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT_AUTH}`))
 
   process.once('SIGTERM', close)
   process.once('SIGINT', close)
