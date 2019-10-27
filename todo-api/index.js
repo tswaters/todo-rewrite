@@ -5,58 +5,46 @@
 // logger depends on up-to-date process.env
 // this file is not required from tests.
 
-const http = require('http')
+const { Client } = require('amqp-wrapper')
+const healthier = require('healthier')
+
 const server = require('./server')
 const logger = require('./lib/logger')
-const services = require('./services')
-const { fetch } = require('./services/i18n')
-const { init, healthy: i18n_healthy } = require('./lib/i18n')
+
+const { init: init_auth } = require('./services/auth')
+const { init: init_todo } = require('./services/todo')
+const { init: init_i18n } = require('./services/i18n')
+const { healthy: i18n_healthy } = require('./lib/i18n')
 const session = require('./middleware/session')
 
-const { PORT = '3000', HEALTH_CHECK_PORT_API = '49996' } = process.env
-
-const health_server = http
-  .createServer(async (req, res) => {
-    if (!services.healthy()) {
-      logger.warn('services unhealthy')
-      res.statusCode = 500
-      return res.end()
-    }
-
-    if (!session.healthy()) {
-      logger.warn('session unhealthy')
-      res.statusCode = 500
-      return res.end()
-    }
-
-    if (!i18n_healthy()) {
-      logger.warn('no i18n keys')
-      res.statusCode = 500
-      return res.end()
-    }
-
-    res.statusCode = 200
-    return res.end('OK')
-  })
-  .listen(parseInt(HEALTH_CHECK_PORT_API), () =>
-    logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT_API}`)
-  )
-
-process.on('SIGTERM', terminate)
-process.on('SIGINT', terminate)
-
-function terminate() {
-  logger.info('Healthcheck server is shutting down...')
-  health_server.close(() =>
-    logger.info('Healthcheck server shutdown complete...')
-  )
-}
+const {
+  PORT = '3000',
+  HEALTH_CHECK_PORT_API = '49996',
+  AMQP_HOST: hostname = 'localhost',
+  AMQP_USER: username,
+  AMQP_PASS: password,
+  AMQP_VHOST: vhost = 'todo',
+  AMQP_RECONNECT_TIMEOUT: timeout = '10000',
+} = process.env
 
 ;(async () => {
-  await services.init()
+  const amqp = new Client(
+    { protocol: 'amqp', hostname, username, password, vhost },
+    { timeout }
+  )
 
-  const keys = await fetch({ locale: 'en' })
-  init('en', keys)
+  healthier({ logger })
+    .add('amqp', () => amqp.healthy)
+    .add('session', () => session.healthy())
+    .add('i18n', () => i18n_healthy())
+    .listen(HEALTH_CHECK_PORT_API)
+
+  amqp.on('error', err => logger.error(err))
+  amqp.on('channel-error', err => logger.error(err))
+
+  await amqp.channel(init_auth)
+  await amqp.channel(init_todo)
+  await amqp.channel(init_i18n)
 
   server.listen(PORT, () => logger.info(`listening on ${PORT}`))
 })().catch(err => {

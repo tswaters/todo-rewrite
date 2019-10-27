@@ -1,0 +1,15 @@
+{
+  "name": "healthier",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "checker": "./bin/checker.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Tyler Waters <tyler.waters@gmail.com>"
+}

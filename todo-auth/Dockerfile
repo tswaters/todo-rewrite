@@ -2,6 +2,7 @@ FROM node:alpine
 WORKDIR /app
 
 COPY --from=amqp-wrapper:latest /app /node-lib/amqp-wrapper
+COPY --from=healthier:latest /app /node-lib/healthier
 
 COPY package.json .
 RUN npm install --quiet

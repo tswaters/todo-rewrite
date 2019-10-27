@@ -14,6 +14,12 @@ class Client extends EventEmitter {
     this.timeout = timeout
     this.setMaxListeners(0)
 
+    this._healthy = false
+    this.on('connect', () => (this._healthy = true))
+    this.on('close', () => (this._healthy = false))
+    this.on('channel-connect', () => (this._healthy = true))
+    this.on('channel-close', () => (this._healthy = false))
+
     // when we close, attempt to reconnect
     this.on('close', () => {
       debug('closed')
@@ -28,6 +34,10 @@ class Client extends EventEmitter {
       clearInterval(this.interval)
       this.interval = null
     })
+  }
+
+  get healthy() {
+    return this._healthy
   }
 
   reconnect() {

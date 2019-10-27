@@ -4,6 +4,8 @@ services:
     image: amqp-wrapper:latest
   lib-auth-helper:
     image: auth-helper:latest
+  lib-healthier:
+    image: healthier:latest
   todo-items:
     image: todo-items:latest
     command: node index.js

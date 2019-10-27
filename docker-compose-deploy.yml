@@ -8,6 +8,10 @@ services:
     deploy:
       restart_policy:
         condition: none
+  lib-healthier:
+    deploy:
+      restart_policy:
+        condition: none
   todo-items:
     deploy:
       replicas: 2

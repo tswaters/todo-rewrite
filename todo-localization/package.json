@@ -11,6 +11,7 @@
   "dependencies": {
     "amqp-wrapper": "file:../node-lib/amqp-wrapper",
     "auth-helper": "file:../node-lib/auth-helper",
+    "healthier": "file:../node-lib/healthier",
     "pg": "^7.8.2",
     "pino": "^5.11.1",
     "secret-to-env": "^1.0.1"

@@ -4,6 +4,8 @@ services:
     build: ./node-lib/amqp-wrapper
   lib-auth-helper:
     build: ./node-lib/auth-helper
+  lib-healthier:
+    build: ./node-lib/healthier
   todo-items:
     build: ./todo-items
   todo-auth:

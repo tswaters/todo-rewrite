@@ -20,8 +20,8 @@ const {
   AMQP_RECONNECT_TIMEOUT: timeout = '10000',
 } = process.env
 
-const http = require('http')
 const { Client, RpcServer } = require('amqp-wrapper')
+const healthier = require('healthier')
 
 const logger = require('./lib/logger')
 const pool = require('./lib/pg')
@@ -34,26 +34,14 @@ const register = require('./api/register')
     { timeout }
   )
 
-  let amqp_healthy = false
+  healthier({ logger })
+    .create({ path: '/health' })
+    .add('amqp', () => amqp.healthy)
+    .add('postgres', () => pool.query('SELECT 1'))
+    .listen(HEALTH_CHECK_PORT_AUTH)
 
   amqp.on('error', err => logger.error(err))
-  amqp.on('connect', () => {
-    logger.info('amqp is connected')
-    amqp_healthy = true
-  })
-  amqp.on('close', () => {
-    logger.info('amqp connection closed')
-    amqp_healthy = false
-  })
   amqp.on('channel-error', err => logger.error(err))
-  amqp.on('channel-connect', () => {
-    logger.info('channel connected')
-    amqp_healthy = true
-  })
-  amqp.on('channel-close', () => {
-    logger.info('channel closed')
-    amqp_healthy = false
-  })
 
   await amqp.channel(async channel => {
     const login_server = await RpcServer.build(channel, 'auth-login', login, {
@@ -69,46 +57,9 @@ const register = require('./api/register')
     register_server.on('error', err => logger.error(err))
   })
 
-  const health_server = http
-    .createServer(async (req, res) => {
-      if (req.url !== '/health') {
-        res.statusCode = 404
-        return res.end()
-      }
-
-      if (!amqp_healthy) {
-        logger.warn('amqp unhealthy')
-        res.statusCode = 500
-        return res.end()
-      }
-
-      try {
-        await pool.query('SELECT 1')
-        res.statusCode = 200
-      } catch (err) {
-        logger.warn('postgres unhealthy')
-        res.statusCode = 500
-      } finally {
-        res.end()
-      }
-    })
-    .listen(parseInt(HEALTH_CHECK_PORT_AUTH), () =>
-      logger.info(`Healthcheck server listening on ${HEALTH_CHECK_PORT_AUTH}`)
-    )
-
+  const close = () => amqp.close()
   process.once('SIGTERM', close)
   process.once('SIGINT', close)
-
-  async function close() {
-    await new Promise(resolve =>
-      health_server.close(() => {
-        logger.info('Healthcheck server successfully closed')
-        resolve()
-      })
-    )
-
-    await amqp.close()
-  }
 })().catch(err => {
   logger.error(err)
   process.exit(1)
