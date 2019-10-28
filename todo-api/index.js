@@ -34,6 +34,7 @@ const {
   )
 
   healthier({ logger })
+    .create({ path: '/health' })
     .add('amqp', () => amqp.healthy)
     .add('session', () => session.healthy())
     .add('i18n', () => i18n_healthy())
