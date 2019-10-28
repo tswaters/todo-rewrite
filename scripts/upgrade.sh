@@ -8,6 +8,7 @@ function upgrade() {
 
 upgrade ../node-lib/amqp-wrapper
 upgrade ../node-lib/auth-helper
+upgrade ../node-lib/healthier
 upgrade ../todo-api
 upgrade ../todo-auth
 upgrade ../todo-items
