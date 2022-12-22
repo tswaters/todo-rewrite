@@ -12,7 +12,7 @@
   "dependencies": {
     "amqp-wrapper": "file:../node-lib/amqp-wrapper",
     "healthier": "file:../node-lib/healthier",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "node-cache": "^4.2.1",
     "pg": "^7.12.1",
     "pino": "^5.13.5",
