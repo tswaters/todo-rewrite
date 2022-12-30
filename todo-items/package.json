@@ -20,7 +20,7 @@
     "secret-to-env": "^1.0.2"
   },
   "devDependencies": {
-    "mocha": "^6.2.2",
+    "mocha": "^10.2.0",
     "nyc": "^14.1.1",
     "proxyquire": "^2.1.3"
   },
